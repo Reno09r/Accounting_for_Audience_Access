@@ -13,8 +13,8 @@
         </div>
         <div class="itm">
             <a href="addemp.html"><img src="img/icons8-плюс-40.png" alt="" class="one_img"></a>
-            <a href="setting.html"><img width="40" height="40" src="https://img.icons8.com/windows/32/000000/wrench.png"
-                    alt="wrench" /></a>
+            <a href="setting.html"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAACXBIWXMAAAsTAAALEwEAmpwYAAACaElEQVR4nO2Yy2sTURTGo+ADVETEhS6riKjd6VLwBfoHmAoK4k53giLufax0IYI7F7oQS0FR0b0UxYUiIiVzblqRBqXUarnfdxLF55VjZ8I0JI1gJsliPhiY3HuH85vzzTn3kkIhV65cvdG495sEuCTAK0d+EuCrkBMOGBHV4lgIS3sCVg5hmSOvOuC7I0PLC/gQqQ52FS6amVnlgKcJhAC/HPlMyGsOuJ8GFOBiV+FCCIuFfJgCeFImt9qc835AgEoruK5kMvL+aArg7ssQltThyMlWcAJcMLsz/yYd6WKAyuupqRU2VqpW17eFS+ZUi5nBRaqDSaAIOJUa310HIC+3gouLZiQzQAccTwKVgM3NAO2+JdzcC0xkBijkuSTQuxCWNwN0wBmnut8ymYKaFOBebP+XzAAj8mQqg2ubAjZmDKiUvd/ogOvx74/ZAXq/ox7Y+4PtAP8WjvcDtkbI5/H4i8wARXVfKvitZPyN92vM1sYrqtU22HxJdXvczO0TOJ8JXKS6R8haHOSHqA79y3PWJwUYjZ/7Znb3DdzY9PTKpDjirF/pOpyoDpndkfcHyuQ6O0QIuUWA0wK8TxXLaMd3EUfucqTGAX7aNjcPnjxk0AueZuYy9/jt7OzqrmfOtYEToCSqh0MIi3oGJ7bOGrP3Ox15wgFnHXAsOeF0XI22lr0/0spWg7PWkwlIDtdJ5bb+5wG0mqrW4kLVKqp7C92UkI/6Fs6Uyt6NQr/BmZK9UsjbfQdncsBw3JB/C3BHyJvWnPsCLvlfxZGfm+yj1Z7DzYMEhs1uIeHIB+Oq2+oLcuXKVegL/QFwKL8tpnaXZwAAAABJRU5ErkJggg==">
+                </a>
             <a href="info.html"><img width="40" height="40" src="https://img.icons8.com/ios-filled/50/info.png"
                     alt="info" /></a>
             <a href="all_info.html"><img src="img/icons8-группа-пользователей,-мужчины-40.png" alt=""></a>
@@ -22,32 +22,26 @@
         </div>
     </header>
     <div class="block_one">
-    <form id="employeeForm">
-        <h1>Добавить сотрудника</h1>
-        <label for="fullName">Полное ФИО сотрудника</label>
-        <input type="text" id="fullName" name="fullName" required>
-        
-        <label for="birthDate">Дата рождения</label>
-        <input type="date" id="birthDate" name="birthDate" required>
-        
-        <label for="phoneNumber">Номер телефона</label>
-        <input type="tel" id="phoneNumber" name="phoneNumber" required>
-        
-        <label for="email">Почта сотрудника</label>
-        <input type="email" id="email" name="email" required>
-        
-        <label for="cardId">ID карточка сотрудника</label>
-        <input type="text" id="cardId" name="cardId" required>
-        
-        <label for="role">Роль</label>
-        <select id="role" name="role">
-            <option value="developer">Разработчик</option>
-            <option value="designer">Дизайнер</option>
-            <option value="manager">Менеджер</option>
-        </select>
-        
-        <button type="submit">Добавить</button>
-    </form>
+        <div class="card1"> 
+            <h3>Изменить ID карту сотрудника</h3>
+            <button class="btn" id="updateCardIdBtn">Изменить</button> 
+        </div> 
+        <div class="card1">
+            <h3>Добавить ключ к аудитории</h3>
+            <button class="btn" id="addAudienceKeyBtn">Добавить</button>
+        </div>
+        <div class="card2">
+            <h3>Изменить имя сотрудника (через ID карту)</h3>
+            <button class="btn" id="updateEmployeeNameBtn">Изменить</button>
+        </div>
+        <div class="card2">
+            <h3>Добавить роль</h3>
+            <button class="btn" id="addRoleBtn">Добавить</button>
+        </div>
+        <div class="card">
+            <h3>Удалить сотрудника</h3>
+            <button class="btn" id="deleteEmployeeBtn">Удалить</button>
+        </div>
     </div>
 </body>
 </html>

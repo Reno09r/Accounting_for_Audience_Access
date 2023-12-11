@@ -44,4 +44,25 @@ a{
     border: 2px solid black;
     margin-left: 11%;
     margin-top: 40px;
+
+}
+.card1{
+    display: inline-block;
+    margin-left: 18%;
+    margin-top: 40px;
+}
+.card2{
+    display: inline-block;
+    margin-top: 40px;
+    margin-left: 18%;
+}
+.card{
+    display: inline-block;
+    margin-left: 18%;
+    margin-top: 40px;
+}
+.btn{
+    width: 110px;
+    height: 30px;
+    margin-left: 30px;
 }
