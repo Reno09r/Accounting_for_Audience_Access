@@ -61,7 +61,7 @@ img{
     border-radius: 70px;
 }
 table {
-    margin-top: 15px;
+    margin-top: 5px;
     width: 90%;
     border-collapse: collapse;
     margin-left: 5%;
@@ -71,10 +71,12 @@ th, td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
-    width: 50px;
     height: 23px;
 }
 
+th:first-child {
+    width: 0px;
+}
 th {
     background-color: #f2f2f2;
 }
@@ -87,14 +89,14 @@ tr:hover {
     background-color: #ddd;
 }
 .modalwin { 
-    height: 70%;  
-    width: 60%;
+    height: 55%;  
+    width: 40%;
     background: rgb(255, 255, 255);
     top: 20%; /* отступ сверху */
     right: 0;
     left: 0;
     font-size: 14px; 
-    margin: 0 auto;
+    margin: 0 auto; 
     z-index:2; /* поверх всех */
     display: none;  /* сначала невидим */
     position: fixed; /* фиксированное позиционирование, окно стабильно при прокрутке */
@@ -102,6 +104,12 @@ tr:hover {
     border: 3px solid #383838;
     border-radius: 30px;
 }
+.modalwin p{
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
 #shadow { 
     position: fixed;
     width:100%;
@@ -117,7 +125,7 @@ tr:hover {
     flex-direction: column;
     align-items: center;
     max-width: 400px;
-    margin: 50px auto;
+    margin: 40px auto;
 }
 .form-field {
     margin-bottom: 20px;

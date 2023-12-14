@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
     <link rel="stylesheet" href="css/admin.css">
+    <script src="js/admin.js"></script>
 </head>
 
 <body>
@@ -28,58 +29,60 @@
         <input type="text" placeholder="Дата" name="search" class="search">
         <input type="text" placeholder="Кабинет" name="search" class="search">
         <img width="40" height="40" src="https://img.icons8.com/ios/50/search--v1.png" alt="search--v1"
-            class="search_img">        
+            class="search_img">
         <div class="plus-minus">
-        </div>    
+        </div>
         <form action="">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAABHklEQVR4nO2WTUrDUBSFv010UJuI69C6AKEGt6HGuhZnlpYOOuzcn50k4ipMnJlQCdxCCC/JfYlPMsiBOwmBj3veefc+GDVAnQIPwDsQA99SsXwLAf8vgTNgBWTAoaVyYA+c9YXeAKkCWK0ECLpCH6UDW2i5+2WXTvMe0DJc3bmntPccmCttP9GAt8pujtL8u9ZcmcwBOBMna7W0OD8b8AG4bwK/OQS/NIE/HYLjJnBSk15bmdKe2IIvOoAvbcEfDq2OBhmu0CH4tgnsOxogP20DpNDGAfgZ5eI3pduUdlN6q/UFTFHqysLytrV4rYWW53bfh0DxRuukQGm7yd4FPTUBniSZmi53NmeqkSer7VWmUCoVyXC401yZUfy3fgGUCo4V1aA/HAAAAABJRU5ErkJggg==" onclick="showModalWin()">
-            <img width="30" height="30" src="https://img.icons8.com/fluency-systems-filled/30/minus.png" alt="minus"/>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAABHklEQVR4nO2WTUrDUBSFv010UJuI69C6AKEGt6HGuhZnlpYOOuzcn50k4ipMnJlQCdxCCC/JfYlPMsiBOwmBj3veefc+GDVAnQIPwDsQA99SsXwLAf8vgTNgBWTAoaVyYA+c9YXeAKkCWK0ECLpCH6UDW2i5+2WXTvMe0DJc3bmntPccmCttP9GAt8pujtL8u9ZcmcwBOBMna7W0OD8b8AG4bwK/OQS/NIE/HYLjJnBSk15bmdKe2IIvOoAvbcEfDq2OBhmu0CH4tgnsOxogP20DpNDGAfgZ5eI3pduUdlN6q/UFTFHqysLytrV4rYWW53bfh0DxRuukQGm7yd4FPTUBniSZmi53NmeqkSer7VWmUCoVyXC401yZUfy3fgGUCo4V1aA/HAAAAABJRU5ErkJggg=="
+                onclick="showModalWin()">
+            <img width="30" height="30" src="https://img.icons8.com/fluency-systems-filled/30/minus.png" alt="minus" />
         </form>
-        
+
     </form>
 
 
-    <div style="text-align: center" id="popupWin" class="modalwin">
-        <form class="new_form" action="admin.html">
+    <div id="popupWin" class="modalwin">
+        <p>Добавление взятия ключа</p>
+        <form class="new_form">
             <div class="form-field">
-                <input value="ФИО" type="text" id="employee_card_id" name="employee_card_id" required>
+                <input placeholder="ФИО" type="text" id="full_name" name="full_name" required>
             </div>
             <div class="form-field">
                 <select id="role" name="role" required>
-                    <option value="">Выберите сотрудника...</option>
+                    <option value="" disabled selected hidden>Выберите сотрудника...</option>
                     <option value="employee"></option>
                     <option value="master"></option>
                 </select>
             </div>
             <div class="form-field">
-                <input value="Ключ" type="text" id="employee_card_id" name="employee_card_id" required>
+                <input placeholder="Ключ" type="text" id="key" name="key" required>
             </div>
             <div class="form-field">
                 <select id="role" name="role" required>
-                    <option value="">Выберите ключ...</option>
+                    <option value="" disabled selected hidden>Выберите ключ...</option>
                     <option value="employee"></option>
                     <option value="master"></option>
                 </select>
             </div>
             <div class="form-field">
-                <input value="Время возврата" type="text" id="employee_card_id" name="employee_card_id" required>
+                <input placeholder="Время возврата" type="text" id="return_time" name="return_time" required>
             </div>
             <button type="submit">Добавить</button>
         </form>
     </div>
 
-
-
-
     <table>
         <tr>
+            <th></th>
             <th>ФИО сотрудника</th>
             <th>Дата</th>
             <th>Время получения</th>
             <th>Ключ от аудитории</th>
             <th>Время возврата</th>
         </tr>
+
         <tr>
+            <td><input type="checkbox"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -87,6 +90,7 @@
             <td></td>
         </tr>
         <tr>
+            <td><input type="checkbox"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -94,6 +98,7 @@
             <td></td>
         </tr>
         <tr>
+            <td><input type="checkbox"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -101,6 +106,7 @@
             <td></td>
         </tr>
         <tr>
+            <td><input type="checkbox"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -108,6 +114,7 @@
             <td></td>
         </tr>
         <tr>
+            <td><input type="checkbox"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -115,6 +122,7 @@
             <td></td>
         </tr>
         <tr>
+            <td><input type="checkbox"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -122,6 +130,7 @@
             <td></td>
         </tr>
         <tr>
+            <td><input type="checkbox"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -129,6 +138,7 @@
             <td></td>
         </tr>
         <tr>
+            <td><input type="checkbox"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -136,6 +146,7 @@
             <td></td>
         </tr>
         <tr>
+            <td><input type="checkbox"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -143,6 +154,7 @@
             <td></td>
         </tr>
         <tr>
+            <td><input type="checkbox"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -151,23 +163,6 @@
         </tr>
     </table>
 
-    <script type="text/javascript">
-        function showModalWin() {
-
-            var darkLayer = document.createElement('div');
-            darkLayer.id = 'shadow'; 
-            document.body.appendChild(darkLayer); 
-
-            var modalWin = document.getElementById('popupWin');
-            modalWin.style.display = 'block';
-
-            darkLayer.onclick = function () {  
-                darkLayer.parentNode.removeChild(darkLayer); 
-                modalWin.style.display = 'none'; 
-                return false;
-            };
-        }
-    </script>
-
 </body>
+
 </html>
