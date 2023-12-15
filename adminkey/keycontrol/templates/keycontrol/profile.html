@@ -1,0 +1,40 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+    <link rel="stylesheet" href="{% static 'keycontrol/css/profile.css' %}">
+</head>
+<body>
+    <header class="head">
+        <div class="title">
+            <a href="{% url 'home' %}"><b>Администрация</b></a>
+        </div>
+        <div class="itm">
+            <a href="{% url 'addemp' %}"><img src="{% static 'keycontrol/img/icons8-плюс-40.png' %}" alt="" class="one_img"></a>
+            <a href="{% url 'tools' %}"><img width="40" height="40" src="https://img.icons8.com/windows/32/000000/wrench.png"
+                    alt="wrench" /></a>
+            <a href="{% url 'roles_info' %}"><img width="40" height="40" src="https://img.icons8.com/ios-filled/50/info.png"
+                    alt="info" /></a>
+            <a href="{% url 'all_info' %}"><img src="{% static 'keycontrol/img/icons8-группа-пользователей,-мужчины-40.png' %}" alt=""></a>
+            <a href="{% url 'profile' %}"><img src="{% static 'keycontrol/img/icons8-пользователь-мужчина-в-кружке-40.png' %}"  alt=""></a>
+        </div>
+    </header>
+    <section class="profile-container">
+        <div class="profile-img">
+            <img src="https://pictures.pibig.info/uploads/posts/2023-04/1680918603_pictures-pibig-info-p-profil-litsa-risunok-vkontakte-14.png" alt="Profile Picture">
+            <h2>Джон Смит</h2>
+        </div>
+        <div class="line"></div>
+        <div class="profile-info">
+            <p>Email: gho@gmail.com</p>
+            <p>Телефон: +1234567890</p>
+            <p>ID карточки: 123456</p>
+        </div>
+    </section>
+</body>
+</html>
