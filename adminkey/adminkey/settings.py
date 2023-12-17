@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'keycontrol',
+    'django_extensions',
+    'keycontrol.apps.KeycontrolConfig',
 ]
 
 MIDDLEWARE = [
@@ -75,11 +76,17 @@ WSGI_APPLICATION = 'adminkey.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+from dotenv import load_dotenv
+import os
+load_dotenv()
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'key_access_db',
+        'USER': 'postgres',
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
