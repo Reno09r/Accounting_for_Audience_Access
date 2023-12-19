@@ -23,7 +23,7 @@
         <div class="second_row">
             <div class="tool">
                 <h2>Добавить ключ к аудитории:</h2>
-                <button onclick="update_key(); openCity(event, 'update')" class="btn" id="addAudienceKeyBtn">Добавить</button>
+                <button onclick="update_key(); openCity(event, 'add')" class="btn" id="addAudienceKeyBtn">Добавить</button>
             </div>
             <div class="tool">
                 <h2>Добавить роль:</h2>
@@ -58,9 +58,9 @@
     </div> -->
 
     <div id="block_change_ID" class="block_ID">
-        <form class="new_form" action="setting.html">
+        <form class="new_form" action="tools.html">
             <div class="form-field">
-                <input placeholder="Поиск по ФИО" type="text" id="employee_card_id" name="employee_card_id" required>
+                <input placeholder="Поиск по ФИО" type="text" id="employee_fullname_search" name="employee_fullname_search" required>
             </div>
             <div class="form-field">
                 <select id="role" name="role" required>
@@ -71,17 +71,17 @@
             </div>
             <div class="form-field">
                 <label class="lable">Изменить ID карты на:</label>
-                <input placeholder="Изменить ID карты на:" type="text" id="employee_card_id" name="employee_card_id"
+                <input placeholder="Изменить ID карты на:" type="text" id="to_card_id" name="to_card_id"
                     required>
             </div>
-            <button type="submit" class="btn_ID">Изменить</button>
+            <button type="submit" class="btn_ID" name = "employee_cardID_change">Изменить</button>
         </form>
     </div>
 
     <div id="block_change_name" class="block_name">
-        <form class="new_form" action="setting.html">
+        <form class="new_form" action="tools.html">
             <div class="form-field">
-                <input placeholder="Поиск по ID карточке" type="text" id="employee_card_id" name="employee_card_id"
+                <input placeholder="Поиск по ID карточке" type="text" id="employee_card_id_search" name="employee_card_id_search"
                     required>
             </div>
             <div class="form-field">
@@ -93,17 +93,17 @@
             </div>
             <div class="form-field">
                 <label class="lable">Изменить ФИО на:</label>
-                <input placeholder="Введите ФИО (через пробел)" type="text" id="employee_card_id"
-                    name="employee_card_id" required>
+                <input placeholder="Введите ФИО (через пробел)" type="text" id="employee_fullname"
+                    name="employee_fullname" required>
             </div>
-            <button type="submit" class="btn_ID">Изменить</button>
+            <button type="submit" class="btn_ID" name = "employee_name_change">Изменить</button>
         </form>
     </div>
 
     <div id="block_delete_emp" class="block_emp">
-        <form class="new_form" action="setting.html">
+        <form class="new_form" action="tools.html">
             <div class="form-field">
-                <input placeholder="Поиск по ФИО" type="text" id="employee_card_id" name="employee_card_id" required>
+                <input placeholder="Поиск по ФИО" type="text" id="employee_fullname_search" name="employee_fullname_search" required>
             </div>
             <div class="form-field">
                 <select id="role" name="role" required>
@@ -112,45 +112,44 @@
                     <option value="master"></option>
                 </select>
             </div>
-            <button type="submit" class="btn_ID">Удалить</button>
+            <button type="submit" class="btn_ID" name = "employee_delete">Удалить</button>
         </form>
     </div>
 
 
     <div id="block_update_key" class="block_key">
         <div class="tab">
-            <button class="tablinks" onclick="openCity(event, 'update')">Добавить</button>
+            <button class="tablinks" onclick="openCity(event, 'add')">Добавить</button>
             <button class="tablinks" onclick="openCity(event, 'delete')">Удалить</button>
         </div>
 
-        <div id="update" class="tabcontent">
-            <form class="new_form" action="setting.html">
+        <div id="add" class="tabcontent">
+            <form class="new_form" method="post">
+                {% csrf_token %}
                 <div class="form-field">
                     <label class="lable">Номер от аудитории:</label>
                 </div>
                 <div class="form-field">
-                    <input placeholder="Номер" type="text" id="employee_card_id" name="employee_card_id" required>
+                    {{ AddAudienceForm.key }}
                 </div>
-                <button type="submit" class="btn_ID">Добавить</button>
+                <button type="submit" class="btn_ID" name="AddAudienceForm">Добавить</button>
             </form>
         </div>
 
         <div id="delete" class="tabcontent">
-            <form class="new_form" action="setting.html">
+            <form class="new_form" method="post">
+                {% csrf_token %}
                 <div class="form-field">
                     <label class="lable">Номер от аудитории:</label>
                 </div>
                 <div class="form-field">
-                    <input placeholder="Поиск" type="text" id="employee_card_id" name="employee_card_id" required>
+                    {{ DeleteAudienceForm.key }}
                 </div>
                 <div class="form-field">
-                    <select id="role" name="role" required>
-                        <option value="" disabled selected hidden>Выберите аудиторию...</option>
-                        <option value="employee"></option>
-                        <option value="master"></option>
-                    </select>
+                    <div class="lable">{{ DeleteAudienceForm.key_selected.label_tag }}</div>
+                    {{ DeleteAudienceForm.key_selected }}
                 </div>
-                <button type="submit" class="btn_ID">Удалить</button>
+                <button type="submit" class="btn_ID" name = "DeleteAudienceForm">Удалить</button>
             </form>
         </div>
     </div>
@@ -163,42 +162,35 @@
         </div>
 
         <div id="up_rol" class="tabcontent">
-            <form class="new_form">
+            <form class="new_form" method="post">
+                {% csrf_token %}
                 <div class="form-field">
-                    <label class="lable">Имя роли:</label>
-                </div>
-                <div class="form-field">
-                    <input placeholder="Имя" type="text" id="employee_card_id" name="employee_card_id" required>
-                </div>
-                <div class="form-field">
-                    <label class="lable">Доступ к ключу:</label>
+                    <label for="{{ AddRoleForm.role_name.id_for_label }}" class="lable">{{ AddRoleForm.role_name.label }}</label>
+                    {{ AddRoleForm.role_name }}
                 </div>
                 <div class="for-field">
-                    <input type="radio" id="master" name="radio_key">
-                    <label class="lable" for="master">Мастер ключ</label> <br>
-                    <input type="radio" id="alone" name="radio_key">
-                    <label class="lable" for="alone">Одиночный ключ</label>
+
+                    <div class="lable">
+                    {{ AddRoleForm.key_access.label }}
+                    {{ AddRoleForm.key_access }}
                 </div>
-                <button type="submit" class="btn_ID">Добавить</button>
+                </div>
+                <button type="submit" class="btn_ID" name="AddRoleForm">Добавить</button>
             </form>
         </div>
 
         <div id="del_rol" class="tabcontent">
-            <form class="new_form">
+            <form class="new_form" method="post">
+                {% csrf_token %}
                 <div class="form-field">
                     <label class="lable">Роль:</label>
+                    {{ DeleteRoleForm.role }}
                 </div>
                 <div class="form-field">
-                    <input placeholder="Поиск" type="text" id="employee_card_id" name="employee_card_id" required>
+                    <div class="lable">{{ DeleteRoleForm.key_selected.label_tag }}</div>
+                    {{ DeleteRoleForm.role_selected }}
                 </div>
-                <div class="form-field">
-                    <select id="role" name="role" required>
-                        <option value="" disabled selected hidden>Выберите роль...</option>
-                        <option value="employee"></option>
-                        <option value="master"></option>
-                    </select>
-                </div>
-                <button type="submit" class="btn_ID">Удалить</button>
+                <button type="submit" class="btn_ID" name = "DeleteRoleForm">Удалить</button>
             </form>
 
         </div>

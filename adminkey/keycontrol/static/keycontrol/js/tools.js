@@ -76,7 +76,7 @@ function update_roli() {
         return false;
     };
 }
-document.querySelector('.tablinks').click();
+
 
 function openCity(evt, cityName) {
     var i, tabcontent, tablinks;

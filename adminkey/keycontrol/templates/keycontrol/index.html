@@ -16,7 +16,7 @@
         <form action="">
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAABHklEQVR4nO2WTUrDUBSFv010UJuI69C6AKEGt6HGuhZnlpYOOuzcn50k4ipMnJlQCdxCCC/JfYlPMsiBOwmBj3veefc+GDVAnQIPwDsQA99SsXwLAf8vgTNgBWTAoaVyYA+c9YXeAKkCWK0ECLpCH6UDW2i5+2WXTvMe0DJc3bmntPccmCttP9GAt8pujtL8u9ZcmcwBOBMna7W0OD8b8AG4bwK/OQS/NIE/HYLjJnBSk15bmdKe2IIvOoAvbcEfDq2OBhmu0CH4tgnsOxogP20DpNDGAfgZ5eI3pduUdlN6q/UFTFHqysLytrV4rYWW53bfh0DxRuukQGm7yd4FPTUBniSZmi53NmeqkSer7VWmUCoVyXC401yZUfy3fgGUCo4V1aA/HAAAAABJRU5ErkJggg=="
                 onclick="showModalWin()">
-            <img width="30" height="30" src="https://img.icons8.com/fluency-systems-filled/30/minus.png" alt="minus" />
+            <img id = "minusButton" width="30" height="30" src="https://img.icons8.com/fluency-systems-filled/30/minus.png" alt="minus" onclick="ReturnKeys()">
         </form>
 
     </form>
@@ -24,30 +24,29 @@
 
     <div id="popupWin" class="modalwin">
         <p>Добавление взятия ключа</p>
-        <form class="new_form">
+        <form class="new_form" method="post">
+            {% csrf_token %}
+    
             <div class="form-field">
-                <input placeholder="ФИО" type="text" id="full_name" name="full_name" required>
+                {{ form.full_name }}
             </div>
+            
             <div class="form-field">
-                <select id="role" name="role" required>
-                    <option value="" disabled selected hidden>Выберите сотрудника...</option>
-                    <option value="employee"></option>
-                    <option value="master"></option>
-                </select>
+                {{ form.emp_choose }}
             </div>
+            
             <div class="form-field">
-                <input placeholder="Ключ" type="text" id="key" name="key" required>
+                {{ form.key }}
             </div>
+            
             <div class="form-field">
-                <select id="role" name="role" required>
-                    <option value="" disabled selected hidden>Выберите ключ...</option>
-                    <option value="employee"></option>
-                    <option value="master"></option>
-                </select>
+                {{ form.key_choose }}
             </div>
+            
             <div class="form-field">
-                <input placeholder="Время возврата" type="text" id="return_time" name="return_time" required>
+                {{ form.return_time }}
             </div>
+            
             <button type="submit">Добавить</button>
         </form>
     </div>
@@ -63,6 +62,7 @@
         </tr>
 
         {% for row in rows %}
+        {% if not row.is_returned %}
         <tr>
             <td><input type="checkbox"></td>
             <td>{{ row.full_name }}</td>
@@ -71,6 +71,7 @@
             <td>{{ row.auditorium_key }}</td>
             <td>{{ row.return_time }}</td>
         </tr>
+        {% endif%}
     {% endfor %}
     </table>
 
