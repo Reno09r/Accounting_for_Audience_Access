@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{% static 'keycontrol/css/addemp.css' %}">    
+</head>
+    <div class="block_one">
+        <form class="form" method="post">
+        <h2>Добавить сотрудника</h2>
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-field">
+                {{ form.fullname.label_tag }}
+                {{ form.fullname }}
+            </div>
+            <div class="form-field">
+                {{ form.date_of_birth.label_tag }}
+                {{ form.date_of_birth }}
+            </div>
+            <div class="form-field">
+                {{ form.phone_number.label_tag }}
+                {{ form.phone_number }}
+            </div>
+            <div class="form-field">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+            </div>
+            <div class="form-field">
+                {{ form.employee_card_id.label_tag }}
+                {{ form.employee_card_id }}
+            </div>
+            <div class="form-field">
+                {{ form.role.label_tag }}
+                {{ form.role }}
+            </div>
+            <button type="submit">Добавить</button>
+        </form>
+        
+    </div>
+</body>
+</html>
+{% endblock %}

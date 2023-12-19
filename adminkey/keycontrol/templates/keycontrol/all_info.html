@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{% static 'keycontrol/css/all_info.css' %}">    
+</head>
+    <form class="form">
+        <input type="text" placeholder="Поиск" name="search" class="search">
+        <img width="50" height="50" src="https://img.icons8.com/ios/50/search--v1.png" alt="search--v1"
+            class="search_img">
+    </form>
+    <table>
+        <tr>
+            <th>ФИО</th>
+            <th>Дата рождения</th>
+            <th>Email</th>
+            <th>Номер телефона</th>
+            <th>Роль</th>
+            <th>ID карты</th>
+        </tr>
+        {% for row in rows %}
+        <tr>
+            <td>{{ row.full_name }}</td>
+            <td>{{ row.birthday }}</td>
+            <td>{{ row.email }}</td>
+            <td>{{ row.phone }}</td>
+            <td>{{ row.role }}</td>
+            <td>{{ row.cardID }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+</body>
+</html>
+{% endblock %}

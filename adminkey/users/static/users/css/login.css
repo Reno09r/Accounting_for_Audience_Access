@@ -1,0 +1,48 @@
+body {
+    margin: 0;
+    background-image: url('../img/output-onlinepngtools.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+}
+
+.block_one {
+    width: 650px;
+    height: 450px;
+    background-color: white;
+    border-radius: 18%;
+    border: 2px solid black;
+}
+.font{
+    margin-top: 110px;
+}
+.fot{
+    margin-top: 30px;
+}
+.lo{
+    font-size: 25px;
+    padding-left:120px;
+    margin-top: 60px;
+}
+.inp{
+    width: 60%;
+    height: 35px;
+    margin-left:120px;
+}
+.olo{
+    font-size: 25px;
+    padding-left:120px;
+    padding-top: 20px;
+}
+.log{
+    font-size: 20px;
+    width: 110px;
+    height: 50px;
+    margin-left: 260px;
+    margin-top: 30px;
+    text-align: center;
+    background-color: #d9f2f2;
+} 

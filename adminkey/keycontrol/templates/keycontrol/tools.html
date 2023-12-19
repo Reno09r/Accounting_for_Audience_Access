@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{% static 'keycontrol/css/tools.css' %}">    
+    <script src="{% static 'keycontrol/js/tools.js' %}"></script>
+</head>
+    <div class="block_one">
+        <div class="first_row">
+            <div class="tool">
+                <h2>Изменить ID карту сотрудника:</h2>
+                <button onclick="change_ID()" class="btn" id="updateCardIdBtn">Изменить</button>
+            </div>
+            <div class="tool">
+                <h2>Изменить ФИО сотрудника:</h2>
+                <button onclick="change_name()" class="btn" id="updateEmployeeNameBtn">Изменить</button>
+            </div>
+            <div class="tool">
+                <h2>Удалить сотрудника:</h2>
+                <button onclick="delete_emp()" class="btn" id="deleteEmployeeBtn">Удалить</button>
+            </div>
+        </div>
+        <div class="second_row">
+            <div class="tool">
+                <h2>Добавить ключ к аудитории:</h2>
+                <button onclick="update_key(); openCity(event, 'add')" class="btn" id="addAudienceKeyBtn">Добавить</button>
+            </div>
+            <div class="tool">
+                <h2>Добавить роль:</h2>
+                <button onclick="update_roli(); openCity(event, 'up_rol')" class="btn" id="addRoleBtn">Добавить</button>
+            </div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <!-- <div class="block_one">
+        <div class="card1"> 
+            <h3>Изменить ID карту сотрудника</h3>
+            <button onclick="change_ID()" class="btn" id="updateCardIdBtn">Изменить</button> 
+        </div> 
+        <div class="card1">
+            <h3>Добавить ключ к аудитории</h3>
+            <button class="btn" id="addAudienceKeyBtn">Добавить</button>
+        </div>
+        <div class="card2">
+            <h3>Изменить имя сотрудника (через ID карту)</h3>
+            <button onclick="change_name()" class="btn" id="updateEmployeeNameBtn">Изменить</button>
+        </div>
+        <div class="card2">
+            <h3>Добавить роль</h3>
+            <button class="btn" id="addRoleBtn">Добавить</button>
+        </div>
+        <div class="card">
+            <h3>Удалить сотрудника</h3>
+            <button onclick="delete_emp()" class="btn" id="deleteEmployeeBtn">Удалить</button>
+        </div>
+    </div> -->
+
+    <div id="block_change_ID" class="block_ID">
+        <form class="new_form" method="post">
+            {% csrf_token %}
+            <div class="form-field">
+                {{ChangeEmployeeIDCardForm.full_name}}
+            </div>
+            <div class="form-field">
+                {{ChangeEmployeeIDCardForm.emp_selected}}
+            </div>
+            <div class="form-field">
+                <label class="lable">Изменить ID карты на:</label>
+                {{ChangeEmployeeIDCardForm.id_card}}
+            </div>
+            <button type="submit" class="btn_ID" name = "ChangeEmployeeIDCardForm">Изменить</button>
+        </form>
+    </div>
+
+    <div id="block_change_name" class="block_name">
+        <form class="new_form" method="post">
+            {% csrf_token %}
+            <div class="form-field">
+                {{ChangeEmployeeFullNameForm.emp_selected}}
+            </div>
+            <div class="form-field">
+                <label class="lable">Изменить ФИО на:</label>
+                {{ChangeEmployeeFullNameForm.full_name}}
+            </div>
+            <button type="submit" class="btn_ID" name = "ChangeEmployeeFullNameForm">Изменить</button>
+        </form>
+    </div>
+
+    <div id="block_delete_emp" class="block_emp">
+        <form class="new_form"  method="post">
+            {% csrf_token %}
+            <div class="form-field">
+                {{DeleteEmployeeForm.full_name}}
+            </div>
+            <div class="form-field">
+                {{DeleteEmployeeForm.emp_selected}}
+            </div>
+            <button type="submit" class="btn_ID" name = "DeleteEmployeeForm">Удалить</button>
+        </form>
+    </div>
+
+
+    <div id="block_update_key" class="block_key">
+        <div class="tab">
+            <button class="tablinks" onclick="openCity(event, 'add')">Добавить</button>
+            <button class="tablinks" onclick="openCity(event, 'delete')">Удалить</button>
+        </div>
+
+        <div id="add" class="tabcontent">
+            <form class="new_form" method="post">
+                {% csrf_token %}
+                <div class="form-field">
+                    <label class="lable">Номер от аудитории:</label>
+                </div>
+                <div class="form-field">
+                    {{ AddAudienceForm.key }}
+                </div>
+                <button type="submit" class="btn_ID" name="AddAudienceForm">Добавить</button>
+            </form>
+        </div>
+
+        <div id="delete" class="tabcontent">
+            <form class="new_form" method="post">
+                {% csrf_token %}
+                <div class="form-field">
+                    <label class="lable">Номер от аудитории:</label>
+                </div>
+                <div class="form-field">
+                    {{ DeleteAudienceForm.key }}
+                </div>
+                <div class="form-field">
+                    <div class="lable">{{ DeleteAudienceForm.key_selected.label_tag }}</div>
+                    {{ DeleteAudienceForm.key_selected }}
+                </div>
+                <button type="submit" class="btn_ID" name = "DeleteAudienceForm">Удалить</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="block_update_roli" class="block_roli">
+        <div class="tab">
+            <button class="tablinks" onclick="openCity(event, 'up_rol')">Добавить</button>
+            <button class="tablinks" onclick="openCity(event, 'del_rol')">Удалить</button>
+        </div>
+
+        <div id="up_rol" class="tabcontent">
+            <form class="new_form" method="post">
+                {% csrf_token %}
+                <div class="form-field">
+                    <label for="{{ AddRoleForm.role_name.id_for_label }}" class="lable">{{ AddRoleForm.role_name.label }}</label>
+                    {{ AddRoleForm.role_name }}
+                </div>
+                <div class="for-field">
+
+                    <div class="lable">
+                    {{ AddRoleForm.key_access.label }}
+                    {{ AddRoleForm.key_access }}
+                </div>
+                </div>
+                <button type="submit" class="btn_ID" name="AddRoleForm">Добавить</button>
+            </form>
+        </div>
+
+        <div id="del_rol" class="tabcontent">
+            <form class="new_form" method="post">
+                {% csrf_token %}
+                <div class="form-field">
+                    <label class="lable">Роль:</label>
+                    {{ DeleteRoleForm.role }}
+                </div>
+                <div class="form-field">
+                    <div class="lable">{{ DeleteRoleForm.key_selected.label_tag }}</div>
+                    {{ DeleteRoleForm.role_selected }}
+                </div>
+                <button type="submit" class="btn_ID" name = "DeleteRoleForm">Удалить</button>
+            </form>
+
+        </div>
+    </div>
+</body>
+
+</html>
+{% endblock %}

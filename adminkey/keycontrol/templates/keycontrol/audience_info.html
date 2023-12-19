@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{% static 'keycontrol/css/audience_info.css' %}">    
+</head>
+    <form class="form">
+        <input type="text" placeholder="Поиск" name="search" class="search">
+        <img width="50" height="50" src="https://img.icons8.com/ios/50/search--v1.png" alt="search--v1"
+            class="search_img">
+    </form>
+    <div class="content">
+        <div class="cont">
+            <a href={% url 'roles_info' %} class="one">Роли</a>
+            <a href={% url 'audience_info' %} class="two">Аудитории</a>
+        </div>
+        
+        <table>
+            <tr>
+                <td>Аудитории:</td>
+            </tr>
+            {% for row in rows %}
+            <tr>
+                <td>{{ row.audience }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+</body>
+</html>
+{% endblock %}
