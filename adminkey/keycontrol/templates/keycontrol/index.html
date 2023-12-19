@@ -13,10 +13,10 @@
             class="search_img">
         <div class="plus-minus">
         </div>
-        <form action="">
+        <form method="post">
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAABHklEQVR4nO2WTUrDUBSFv010UJuI69C6AKEGt6HGuhZnlpYOOuzcn50k4ipMnJlQCdxCCC/JfYlPMsiBOwmBj3veefc+GDVAnQIPwDsQA99SsXwLAf8vgTNgBWTAoaVyYA+c9YXeAKkCWK0ECLpCH6UDW2i5+2WXTvMe0DJc3bmntPccmCttP9GAt8pujtL8u9ZcmcwBOBMna7W0OD8b8AG4bwK/OQS/NIE/HYLjJnBSk15bmdKe2IIvOoAvbcEfDq2OBhmu0CH4tgnsOxogP20DpNDGAfgZ5eI3pduUdlN6q/UFTFHqysLytrV4rYWW53bfh0DxRuukQGm7yd4FPTUBniSZmi53NmeqkSer7VWmUCoVyXC401yZUfy3fgGUCo4V1aA/HAAAAABJRU5ErkJggg=="
                 onclick="showModalWin()">
-            <img id = "minusButton" width="30" height="30" src="https://img.icons8.com/fluency-systems-filled/30/minus.png" alt="minus" onclick="ReturnKeys()">
+            <img id = "minusButton" width="30" height="30" src="https://img.icons8.com/fluency-systems-filled/30/minus.png" alt="minus" onclick="ReturnKeys('{{csrf_token}}')">
         </form>
 
     </form>
@@ -64,7 +64,7 @@
         {% for row in rows %}
         {% if not row.is_returned %}
         <tr>
-            <td><input type="checkbox"></td>
+            <td><input type="checkbox" data-row-id="{{ row.id }}"></td>
             <td>{{ row.full_name }}</td>
             <td>{{ row.date }}</td>
             <td>{{ row.time_received }}</td>

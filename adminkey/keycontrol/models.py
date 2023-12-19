@@ -47,10 +47,7 @@ class ByIDTakedKey(models.Model):
     return_time = models.DateTimeField()
     is_returned = models.BooleanField()
     key_transferred = models.BooleanField()
-
-    def __str__(self):
-        return self.IDCard, self.auditorium
-
+    
 class Schedule(models.Model):
     id = models.AutoField(primary_key=True)
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)

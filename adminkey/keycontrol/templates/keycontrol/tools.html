@@ -12,7 +12,7 @@
                 <button onclick="change_ID()" class="btn" id="updateCardIdBtn">Изменить</button>
             </div>
             <div class="tool">
-                <h2>Изменить имя сотрудника (через ID карту):</h2>
+                <h2>Изменить ФИО сотрудника:</h2>
                 <button onclick="change_name()" class="btn" id="updateEmployeeNameBtn">Изменить</button>
             </div>
             <div class="tool">
@@ -58,61 +58,46 @@
     </div> -->
 
     <div id="block_change_ID" class="block_ID">
-        <form class="new_form" action="tools.html">
+        <form class="new_form" method="post">
+            {% csrf_token %}
             <div class="form-field">
-                <input placeholder="Поиск по ФИО" type="text" id="employee_fullname_search" name="employee_fullname_search" required>
+                {{ChangeEmployeeIDCardForm.full_name}}
             </div>
             <div class="form-field">
-                <select id="role" name="role" required>
-                    <option value="" disabled selected hidden>Выберите сотрудника...</option>
-                    <option value="employee"></option>
-                    <option value="master"></option>
-                </select>
+                {{ChangeEmployeeIDCardForm.emp_selected}}
             </div>
             <div class="form-field">
                 <label class="lable">Изменить ID карты на:</label>
-                <input placeholder="Изменить ID карты на:" type="text" id="to_card_id" name="to_card_id"
-                    required>
+                {{ChangeEmployeeIDCardForm.id_card}}
             </div>
-            <button type="submit" class="btn_ID" name = "employee_cardID_change">Изменить</button>
+            <button type="submit" class="btn_ID" name = "ChangeEmployeeIDCardForm">Изменить</button>
         </form>
     </div>
 
     <div id="block_change_name" class="block_name">
-        <form class="new_form" action="tools.html">
+        <form class="new_form" method="post">
+            {% csrf_token %}
             <div class="form-field">
-                <input placeholder="Поиск по ID карточке" type="text" id="employee_card_id_search" name="employee_card_id_search"
-                    required>
-            </div>
-            <div class="form-field">
-                <select id="role" name="role" required>
-                    <option value="" disabled selected hidden>Выберите сотрудника...</option>
-                    <option value="employee"></option>
-                    <option value="master"></option>
-                </select>
+                {{ChangeEmployeeFullNameForm.emp_selected}}
             </div>
             <div class="form-field">
                 <label class="lable">Изменить ФИО на:</label>
-                <input placeholder="Введите ФИО (через пробел)" type="text" id="employee_fullname"
-                    name="employee_fullname" required>
+                {{ChangeEmployeeFullNameForm.full_name}}
             </div>
-            <button type="submit" class="btn_ID" name = "employee_name_change">Изменить</button>
+            <button type="submit" class="btn_ID" name = "ChangeEmployeeFullNameForm">Изменить</button>
         </form>
     </div>
 
     <div id="block_delete_emp" class="block_emp">
-        <form class="new_form" action="tools.html">
+        <form class="new_form"  method="post">
+            {% csrf_token %}
             <div class="form-field">
-                <input placeholder="Поиск по ФИО" type="text" id="employee_fullname_search" name="employee_fullname_search" required>
+                {{DeleteEmployeeForm.full_name}}
             </div>
             <div class="form-field">
-                <select id="role" name="role" required>
-                    <option value="" disabled selected hidden>Выберите сотрудника...</option>
-                    <option value="employee"></option>
-                    <option value="master"></option>
-                </select>
+                {{DeleteEmployeeForm.emp_selected}}
             </div>
-            <button type="submit" class="btn_ID" name = "employee_delete">Удалить</button>
+            <button type="submit" class="btn_ID" name = "DeleteEmployeeForm">Удалить</button>
         </form>
     </div>
 

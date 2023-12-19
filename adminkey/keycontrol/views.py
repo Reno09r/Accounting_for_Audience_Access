@@ -1,11 +1,14 @@
 from datetime import datetime
+import json
 from django.forms import ValidationError
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect, JsonResponse
-from .forms import AddEmployeeForm, DeleteAudienceForm, DeleteRoleForm, KeyRequestForm, AudienceAddForm,  DeleteAudienceForm, AddRoleForm
+from .forms import DeleteEmployeeForm, ChangeEmployeeIDCardForm, ChangeEmployeeFullNameForm, AddEmployeeForm, DeleteAudienceForm, DeleteRoleForm, KeyRequestForm, AudienceAddForm,  DeleteAudienceForm, AddRoleForm
 from .models import Auditorium, KeyTransfer, Employee, ByIDTakedKey, IDCard, EmployeeIDCard, Role
 from django.shortcuts import render, redirect
 
-
+@login_required
 def index(request):
     emps = Employee.objects.all()
     emp_choices = [(f"{emp.first_name} {emp.last_name}",
@@ -46,47 +49,101 @@ def index(request):
         emp_id_card = EmployeeIDCard.objects.get(employee=employee)
         ByIDTakedKey.objects.create(IDCard=emp_id_card, auditorium=key, take_time=today,
                                     return_time=return_time_str, key_transferred=False, is_returned=False)
-
+        return redirect('home')
     key_records = ByIDTakedKey.objects.all()
     rows = [{
+        'id': record.id,
         'full_name': f"{record.IDCard.employee.first_name} {record.IDCard.employee.last_name}",
         'date': record.take_time.date(),
         'time_received': record.take_time.strftime('%H:%M'),
         'auditorium_key': record.auditorium.room_number,
         'return_time': record.return_time.strftime('%H:%M'),
+        'is_returned': record.is_returned
     } for record in key_records]
 
     return render(request, 'keycontrol/index.html', {'rows': rows, 'form': form})
 
 def mark_returned(request):
-    if request.method == 'POST' and request.is_ajax():
-        selected_ids = request.POST.getlist('selected_ids[]')
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        selected_ids = data.get('selected_ids', [])
         for row_id in selected_ids:
-            ByIDTakedKey.objects.filter(id=row_id).update(is_returned=True)
+            ByIDTakedKey.objects.filter(id=int(row_id)).update(is_returned=True)
+
         return JsonResponse({'status': 'success'})
 
     return JsonResponse({'status': 'error'})
 
 
 
-def login(request):
-    return render(request, 'keycontrol/login.html')
 
-
+@login_required
 def profile(request):
-    return render(request, 'keycontrol/profile.html')
+    user = request.user
 
+    # Now you can use user attributes, for example:
+    username = user.username
+    email = user.email
+    first_name = user.first_name
+    last_name = user.last_name
 
+    # You can pass these variables to the template
+    context = {
+        'username': username,
+        'email': email,
+        'first_name': first_name,
+        'last_name': last_name,
+    }
+
+    return render(request, 'keycontrol/profile.html', context)
+
+@login_required
 def tools(request):
     keys = Auditorium.objects.all()
     key_choices = [(key.room_number, key.room_number) for key in keys]
     roles = Role.objects.all()
     role_choices = [(role.role_name, role.role_name) for role in roles]
+    emps = Employee.objects.all()
+    emp_choices = [(f"{emp.first_name} {emp.last_name}",
+                    f"{emp.first_name} {emp.last_name}") for emp in emps]
+    ChangeEmployeeIDCardform =ChangeEmployeeIDCardForm(emp_choices=emp_choices)
+    ChangeEmployeeFullNameform = ChangeEmployeeFullNameForm(emp_choices=emp_choices)
+    DeleteEmployeeform = DeleteEmployeeForm(emp_choices=emp_choices)
     AddAudienceform = AudienceAddForm()
     AddRoleform = AddRoleForm()
     DeleteAudienceform = DeleteAudienceForm(key_choices=key_choices)
     DeleteRoleform = DeleteRoleForm(role_choices=role_choices)
     if request.method == 'POST':
+        if 'ChangeEmployeeFullNameForm' in request.POST:
+            ChangeEmployeeFullNameform = ChangeEmployeeFullNameForm(request.POST, emp_choices=emp_choices)
+            if ChangeEmployeeFullNameform.is_valid():
+                first_name, last_name = ChangeEmployeeFullNameform.cleaned_data['emp_selected'].split()
+                new_first_name, new_last_name = ChangeEmployeeFullNameform.cleaned_data['full_name'].split()
+                employee = Employee.objects.filter(first_name=first_name, last_name=last_name).first()
+                employee.first_name = new_first_name
+                employee.last_name = new_last_name
+                employee.save()
+        if 'ChangeEmployeeIDCardForm' in request.POST:
+            ChangeEmployeeIDCardform = ChangeEmployeeIDCardForm(request.POST, emp_choices=emp_choices)
+            if ChangeEmployeeIDCardform.is_valid():
+                first_name, last_name = ChangeEmployeeIDCardform.cleaned_data['emp_selected'].split()
+                employee = Employee.objects.filter(first_name=first_name, last_name=last_name).first()
+                if employee:
+                    emp_id_card = EmployeeIDCard.objects.get(employee=employee)
+                    emp_id_card.IDCard.code = ChangeEmployeeIDCardform.cleaned_data['id_card']
+                    emp_id_card.IDCard.save()
+                    emp_id_card.save()
+        if 'DeleteEmployeeForm' in request.POST:
+            DeleteEmployeeform = DeleteEmployeeForm(request.POST, emp_choices=emp_choices)
+            if DeleteEmployeeform.is_valid():
+                first_name, last_name =  DeleteEmployeeform.cleaned_data['emp_selected'].split()
+                employee = Employee.objects.filter(first_name=first_name, last_name=last_name).first()
+                emp_id_card = EmployeeIDCard.objects.get(employee=employee)
+                tk = ByIDTakedKey.objects.filter(IDCard = emp_id_card)
+                tk.delete()
+                emp_id_card.delete()
+                emp_id_card.IDCard.delete()
+                employee.delete()
         if 'AddAudienceForm' in request.POST:
             AddAudienceform = AudienceAddForm(request.POST)
             if AddAudienceform.is_valid():
@@ -116,14 +173,17 @@ def tools(request):
         return redirect(request.path)
 
     context = {
+        'ChangeEmployeeIDCardForm': ChangeEmployeeIDCardform,
+        'ChangeEmployeeFullNameForm': ChangeEmployeeFullNameform,
+        'DeleteEmployeeForm': DeleteEmployeeform,
         'AddAudienceForm': AddAudienceform,
         'AddRoleForm': AddRoleform,
         'DeleteAudienceForm': DeleteAudienceform,
-        'DeleteRoleForm': DeleteRoleform
+        'DeleteRoleForm': DeleteRoleform,
     }
     return render(request, 'keycontrol/tools.html', context=context)
 
-
+@login_required
 def addemp(request):
     roles = Role.objects.all()
 
@@ -146,7 +206,7 @@ def addemp(request):
                 role=role_obj, birthday=date_of_birth, first_name=fn, last_name=ln, email=email, phone=phone_number)
             idc = IDCard.objects.create(code=employee_card_id)
             EmployeeIDCard.objects.create(employee_id=emp.pk, IDCard=idc)
-
+        return redirect(request.path)
     return render(request, 'keycontrol/addemp.html', {'form': form})
 
 

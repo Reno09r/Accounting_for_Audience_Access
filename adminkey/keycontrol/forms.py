@@ -84,3 +84,41 @@ class DeleteRoleForm(forms.Form):
         role_choices = kwargs.pop('role_choices', [])
         super(DeleteRoleForm, self).__init__(*args, **kwargs)
         self.fields['role_selected'].choices = role_choices 
+
+
+class ChangeEmployeeIDCardForm(forms.Form):
+    full_name = forms.CharField(label='ФИО', widget=forms.TextInput(attrs={'placeholder': 'ФИО'}), required=False)
+    emp_selected = forms.ChoiceField(
+        label='Выберите сотрудника...',
+        choices=[],
+        widget=forms.Select(attrs={'required': True})
+    )
+    id_card = forms.CharField(label='Изменить ID карты на:', widget=forms.TextInput(attrs={'placeholder': 'Изменить ID карты на:'}), required=True)
+    def __init__(self, *args, **kwargs):
+        emp_choices = kwargs.pop('emp_choices', [])
+        super(ChangeEmployeeIDCardForm, self).__init__(*args, **kwargs)
+        self.fields['emp_selected'].choices = emp_choices
+
+class ChangeEmployeeFullNameForm(forms.Form):
+    emp_selected = forms.ChoiceField(
+        label='Выберите сотрудника...',
+        choices=[],
+        widget=forms.Select(attrs={'required': True})
+    )
+    full_name = forms.CharField(label='Изменить ФИО на:', widget=forms.TextInput(attrs={'placeholder': 'Изменить ФИО на:'}), required=True)
+    def __init__(self, *args, **kwargs):
+        emp_choices = kwargs.pop('emp_choices', [])
+        super(ChangeEmployeeFullNameForm, self).__init__(*args, **kwargs)
+        self.fields['emp_selected'].choices = emp_choices
+
+class DeleteEmployeeForm(forms.Form):
+    full_name = forms.CharField(label='Поиск по ФИО', widget=forms.TextInput(attrs={'placeholder': 'Поиск по ФИО'}), required=False)
+    emp_selected = forms.ChoiceField(
+        label='Выберите сотрудника...',
+        choices=[],
+        widget=forms.Select(attrs={'required': True})
+    )
+    def __init__(self, *args, **kwargs):
+        emp_choices = kwargs.pop('emp_choices', [])
+        super(DeleteEmployeeForm, self).__init__(*args, **kwargs)
+        self.fields['emp_selected'].choices = emp_choices

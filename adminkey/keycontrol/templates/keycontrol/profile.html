@@ -25,13 +25,15 @@
     <section class="profile-container">
         <div class="profile-img">
             <img src="https://pictures.pibig.info/uploads/posts/2023-04/1680918603_pictures-pibig-info-p-profil-litsa-risunok-vkontakte-14.png" alt="Profile Picture">
-            <h2>Джон Смит</h2>
+            <h2>{{ first_name }} {{ last_name }}</h2>
         </div>
         <div class="line"></div>
         <div class="profile-info">
-            <p>Email: gho@gmail.com</p>
-            <p>Телефон: +1234567890</p>
-            <p>ID карточки: 123456</p>
+            <p>Email: {{ email }}</p>
+            <form method="post" action="{% url 'users:logout' %}">
+                {% csrf_token %}
+                <button class="enter" type="submit">Выйти</button>
+            </form>
         </div>
     </section>
 </body>

@@ -14,23 +14,48 @@ function showModalWin() {
     };
 }
 
-document.getElementById('minusButton').addEventListener('click', function() {
+function ReturnKeys(csrfToken) {
     var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-    var data = {
-        'action': 'mark_returned',
-        'selected_ids': Array.from(checkboxes).map(function(checkbox) {
-            return checkbox.closest('tr').dataset.rowId;
-        })
-    };
+    var selectedIds = Array.from(checkboxes).map(function(checkbox) {
+        return checkbox.dataset.rowId;
+    });
 
+    // Отправим AJAX-запрос
     fetch('/mark_returned/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrf_token
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCookie('csrftoken')  // Получаем CSRF-токен из куки
         },
-        body: JSON.stringify(data)
-    }).then(function(response) {
-        console.log(response);
+        body: JSON.stringify({
+            'action': 'mark_returned',
+            'selected_ids': selectedIds
+        })
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        console.log(data);  // Обработка ответа от сервера
+        console.log(selectedIds)
+        location.reload(true)
     });
-});
+}
+
+// Функция для получения CSRF-токена из куки
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Ищем куки с нужным именем
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
