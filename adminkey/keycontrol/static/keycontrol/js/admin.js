@@ -1,3 +1,9 @@
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('.search_img').addEventListener('click', function () {
+        document.getElementById('searchForm').submit();
+        console.log('cl')
+    });
+});
 function showModalWin() {
 
     var darkLayer = document.createElement('div');
@@ -20,13 +26,12 @@ function ReturnKeys(csrfToken) {
         return checkbox.dataset.rowId;
     });
 
-    // Отправим AJAX-запрос
     fetch('/mark_returned/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': getCookie('csrftoken')  // Получаем CSRF-токен из куки
+            'X-CSRFToken': getCookie('csrftoken')  
         },
         body: JSON.stringify({
             'action': 'mark_returned',
@@ -37,20 +42,18 @@ function ReturnKeys(csrfToken) {
         return response.json();
     })
     .then(function(data) {
-        console.log(data);  // Обработка ответа от сервера
+        console.log(data);  
         console.log(selectedIds)
         location.reload(true)
     });
 }
 
-// Функция для получения CSRF-токена из куки
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         var cookies = document.cookie.split(';');
         for (var i = 0; i < cookies.length; i++) {
             var cookie = cookies[i].trim();
-            // Ищем куки с нужным именем
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;

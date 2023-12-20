@@ -5,12 +5,10 @@
     <link rel="stylesheet" href="{% static 'keycontrol/css/admin.css' %}">    
     <script src="{% static 'keycontrol/js/admin.js' %}"></script>
 </head>
-    <form class="form">
-        <input type="text" placeholder="ФИО" name="search" class="search_one">
-        <input type="text" placeholder="Дата" name="search" class="search">
-        <input type="text" placeholder="Кабинет" name="search" class="search">
-        <img width="40" height="40" src="https://img.icons8.com/ios/50/search--v1.png" alt="search--v1"
-            class="search_img">
+    <form class="form" id="searchForm" method="get">
+        {{ SearchForm.search_full_name}}
+        {{ SearchForm.search_auditorium}}
+        <img id="searchIcon" width="40" height="40" src="https://img.icons8.com/ios/50/search--v1.png" alt="search--v1" class="search_img" name = 'SearchForm'>
         <div class="plus-minus">
         </div>
         <form method="post">
@@ -28,26 +26,26 @@
             {% csrf_token %}
     
             <div class="form-field">
-                {{ form.full_name }}
+                {{ KeyRequestForm.full_name }}
             </div>
             
             <div class="form-field">
-                {{ form.emp_choose }}
+                {{ KeyRequestForm.emp_choose }}
             </div>
             
             <div class="form-field">
-                {{ form.key }}
+                {{ KeyRequestForm.key }}
             </div>
             
             <div class="form-field">
-                {{ form.key_choose }}
+                {{ KeyRequestForm.key_choose }}
             </div>
             
             <div class="form-field">
-                {{ form.return_time }}
+                {{ KeyRequestForm.return_time }}
             </div>
             
-            <button type="submit">Добавить</button>
+            <button type="submit" name = 'KeyRequestForm'>Добавить</button>
         </form>
     </div>
 

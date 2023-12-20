@@ -1,10 +1,12 @@
 from datetime import datetime
 import json
 from django.forms import ValidationError
+from django.db.models import Q
+from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect, JsonResponse
-from .forms import DeleteEmployeeForm, ChangeEmployeeIDCardForm, ChangeEmployeeFullNameForm, AddEmployeeForm, DeleteAudienceForm, DeleteRoleForm, KeyRequestForm, AudienceAddForm,  DeleteAudienceForm, AddRoleForm
+from .forms import SearchForm, SearchFullNameForm, DeleteEmployeeForm, ChangeEmployeeIDCardForm, ChangeEmployeeFullNameForm, AddEmployeeForm, DeleteAudienceForm, DeleteRoleForm, KeyRequestForm, AudienceAddForm,  DeleteAudienceForm, AddRoleForm
 from .models import Auditorium, KeyTransfer, Employee, ByIDTakedKey, IDCard, EmployeeIDCard, Role
 from django.shortcuts import render, redirect
 
@@ -17,7 +19,8 @@ def index(request):
     key_choices = [(key.room_number, key.room_number) for key in keys]
     
     form = KeyRequestForm(request.POST, emp_choices=emp_choices, key_choices=key_choices)
-    
+    search_form = SearchForm(request.GET)
+    key_records = ByIDTakedKey.objects.all()
     if request.method == 'POST' and form.is_valid():
         emp = form.cleaned_data['emp_choose']
         key = form.cleaned_data['key_choose']
@@ -42,15 +45,21 @@ def index(request):
 
         if not employee.role.is_master and existing_key_entries >= 1:
             raise ValidationError("Роль данного сотрудника не позволяет использовать больше одного ключа.")
-
-
-
         key = Auditorium.objects.get(room_number=key)
         emp_id_card = EmployeeIDCard.objects.get(employee=employee)
         ByIDTakedKey.objects.create(IDCard=emp_id_card, auditorium=key, take_time=today,
                                     return_time=return_time_str, key_transferred=False, is_returned=False)
         return redirect('home')
-    key_records = ByIDTakedKey.objects.all()
+    elif request.method == 'GET' and search_form.is_valid():
+
+        search_full_name =search_form.cleaned_data['search_full_name']
+        
+        search_auditorium = search_form.cleaned_data['search_auditorium']
+        if search_full_name:
+            key_records = key_records.filter(Q(IDCard__employee__first_name__icontains= search_full_name) | Q(IDCard__employee__last_name__icontains= search_full_name))
+        if search_auditorium:
+            key_records = key_records.filter(auditorium__room_number__icontains=search_auditorium)
+    
     rows = [{
         'id': record.id,
         'full_name': f"{record.IDCard.employee.first_name} {record.IDCard.employee.last_name}",
@@ -60,8 +69,12 @@ def index(request):
         'return_time': record.return_time.strftime('%H:%M'),
         'is_returned': record.is_returned
     } for record in key_records]
-
-    return render(request, 'keycontrol/index.html', {'rows': rows, 'form': form})
+    context = {
+        'KeyRequestForm': form,
+        'SearchForm': search_form,
+        'rows': rows,
+    }
+    return render(request, 'keycontrol/index.html', context)
 
 def mark_returned(request):
     if request.method == 'POST':
@@ -211,8 +224,15 @@ def addemp(request):
 
 
 def all_info(request):
+    form = SearchFullNameForm(request.GET)
     key_records = Employee.objects.all()
     rows = []
+    if form.is_valid():
+        inp = form.cleaned_data['full_name']
+        if inp:
+            key_records = Employee.objects.filter(
+    Q(first_name__icontains=inp) | Q(last_name__icontains=inp)
+)
     for record in key_records:
         rows.append({
             'full_name': f"{record.first_name} {record.last_name}",
@@ -223,7 +243,7 @@ def all_info(request):
             'cardID': EmployeeIDCard.objects.get(employee=record).IDCard.code,
         })
 
-    return render(request, 'keycontrol/all_info.html', {'rows': rows})
+    return render(request, 'keycontrol/all_info.html', {'rows': rows, 'form': form})
 
 
 def roles_info(request):

@@ -1,5 +1,4 @@
 function change_ID() {
- 
     var darkLayer = document.createElement('div');
     darkLayer.id = 'shadow'; 
     document.body.appendChild(darkLayer);

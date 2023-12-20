@@ -2,10 +2,11 @@
 {% load static %}
 {% block content %}
 <head>
-    <link rel="stylesheet" href="{% static 'keycontrol/css/all_info.css' %}">    
+    <link rel="stylesheet" href="{% static 'keycontrol/css/all_info.css' %}">  
+    <script src="{% static 'keycontrol/js/all_info.js' %}"></script>  
 </head>
-    <form class="form">
-        <input type="text" placeholder="Поиск" name="search" class="search">
+    <form id="searchForm" class="form" method="get">
+        {{ form.full_name }}
         <img width="50" height="50" src="https://img.icons8.com/ios/50/search--v1.png" alt="search--v1"
             class="search_img">
     </form>

@@ -100,6 +100,7 @@ class ChangeEmployeeIDCardForm(forms.Form):
         self.fields['emp_selected'].choices = emp_choices
 
 class ChangeEmployeeFullNameForm(forms.Form):
+    full_name_search = forms.CharField(label='ФИО', widget=forms.TextInput(attrs={'placeholder': 'ФИО'}), required=False)
     emp_selected = forms.ChoiceField(
         label='Выберите сотрудника...',
         choices=[],
@@ -122,3 +123,10 @@ class DeleteEmployeeForm(forms.Form):
         emp_choices = kwargs.pop('emp_choices', [])
         super(DeleteEmployeeForm, self).__init__(*args, **kwargs)
         self.fields['emp_selected'].choices = emp_choices
+
+class SearchFullNameForm(forms.Form):
+    full_name = forms.CharField(label='Поиск', widget=forms.TextInput(attrs={'placeholder': 'Поиск', 'class': 'search'}), required=False)
+
+class SearchForm(forms.Form):
+    search_full_name = forms.CharField(label='ФИО', widget=forms.TextInput(attrs={'placeholder': 'ФИО', 'class': 'search_one'}), required=False)
+    search_auditorium = forms.CharField(label='Кабинет', widget=forms.TextInput(attrs={'placeholder': 'Аудитория', 'class': 'search'}),required=False)

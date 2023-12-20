@@ -1,4 +1,8 @@
 
+.hide{
+    display: none;
+}
+
 .block_one {
     width: 950px;
     height: 500px;
