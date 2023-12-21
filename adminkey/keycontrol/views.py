@@ -1,12 +1,13 @@
 from datetime import datetime
 import json
+import csv
 from django.forms import ValidationError
 from django.db.models import Q
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect, JsonResponse
-from .forms import SearchForm, SearchFullNameForm, DeleteEmployeeForm, ChangeEmployeeIDCardForm, ChangeEmployeeFullNameForm, AddEmployeeForm, DeleteAudienceForm, DeleteRoleForm, KeyRequestForm, AudienceAddForm,  DeleteAudienceForm, AddRoleForm
+from .forms import SearchForm, SearchAdminForm, DeleteEmployeeForm, ChangeEmployeeIDCardForm, ChangeEmployeeFullNameForm, AddEmployeeForm, DeleteAudienceForm, DeleteRoleForm, KeyRequestForm, AudienceAddForm,  DeleteAudienceForm, AddRoleForm
 from .models import Auditorium, KeyTransfer, Employee, ByIDTakedKey, IDCard, EmployeeIDCard, Role
 from django.shortcuts import render, redirect
 
@@ -19,7 +20,7 @@ def index(request):
     key_choices = [(key.room_number, key.room_number) for key in keys]
     
     form = KeyRequestForm(request.POST, emp_choices=emp_choices, key_choices=key_choices)
-    search_form = SearchForm(request.GET)
+    search_form = SearchAdminForm(request.GET)
     key_records = ByIDTakedKey.objects.all()
     if request.method == 'POST' and form.is_valid():
         emp = form.cleaned_data['emp_choose']
@@ -51,7 +52,6 @@ def index(request):
                                     return_time=return_time_str, key_transferred=False, is_returned=False)
         return redirect('home')
     elif request.method == 'GET' and search_form.is_valid():
-
         search_full_name =search_form.cleaned_data['search_full_name']
         
         search_auditorium = search_form.cleaned_data['search_auditorium']
@@ -71,7 +71,7 @@ def index(request):
     } for record in key_records]
     context = {
         'KeyRequestForm': form,
-        'SearchForm': search_form,
+        'SearchAdminForm': search_form,
         'rows': rows,
     }
     return render(request, 'keycontrol/index.html', context)
@@ -186,14 +186,15 @@ def tools(request):
         return redirect(request.path)
 
     context = {
-        'ChangeEmployeeIDCardForm': ChangeEmployeeIDCardform,
-        'ChangeEmployeeFullNameForm': ChangeEmployeeFullNameform,
-        'DeleteEmployeeForm': DeleteEmployeeform,
-        'AddAudienceForm': AddAudienceform,
-        'AddRoleForm': AddRoleform,
-        'DeleteAudienceForm': DeleteAudienceform,
-        'DeleteRoleForm': DeleteRoleform,
+    'ChangeEmployeeIDCardForm': ChangeEmployeeIDCardform,
+    'ChangeEmployeeFullNameForm': ChangeEmployeeFullNameform,
+    'DeleteEmployeeForm': DeleteEmployeeform,
+    'AddAudienceForm': AddAudienceform,
+    'AddRoleForm': AddRoleform,
+    'DeleteAudienceForm': DeleteAudienceform,
+    'DeleteRoleForm': DeleteRoleform,
     }
+
     return render(request, 'keycontrol/tools.html', context=context)
 
 @login_required
@@ -222,13 +223,13 @@ def addemp(request):
         return redirect(request.path)
     return render(request, 'keycontrol/addemp.html', {'form': form})
 
-
+@login_required
 def all_info(request):
-    form = SearchFullNameForm(request.GET)
+    form = SearchForm(request.GET)
     key_records = Employee.objects.all()
     rows = []
     if form.is_valid():
-        inp = form.cleaned_data['full_name']
+        inp = form.cleaned_data['search']
         if inp:
             key_records = Employee.objects.filter(
     Q(first_name__icontains=inp) | Q(last_name__icontains=inp)
@@ -245,26 +246,74 @@ def all_info(request):
 
     return render(request, 'keycontrol/all_info.html', {'rows': rows, 'form': form})
 
-
+@login_required
 def roles_info(request):
+    form = SearchForm(request.GET)
     key_records = Role.objects.all()
     rows = []
+    if form.is_valid():
+        inp = form.cleaned_data['search']
+        if inp:
+            key_records =  Role.objects.filter(
+    Q(role_name__icontains=inp))
     for record in key_records:
         rows.append({
             'role': record.role_name
         })
-    return render(request, 'keycontrol/roles_info.html', {'rows': rows})
+    return render(request, 'keycontrol/roles_info.html', {'rows': rows, 'form': form})
 
-
+@login_required
 def audience_info(request):
+    form = SearchForm(request.GET)
     key_records = Auditorium.objects.all()
     rows = []
+    if form.is_valid():
+        inp = form.cleaned_data['search']
+        if inp:
+            key_records =  Auditorium.objects.filter(
+    Q(room_number__icontains=inp))
     for record in key_records:
         rows.append({
             'audience': record.room_number
         })
-    return render(request, 'keycontrol/audience_info.html', {'rows': rows})
+    return render(request, 'keycontrol/audience_info.html', {'rows': rows, 'form': form})
 
+@login_required
+def upload(request):
+    if request.method == 'GET':
+        with open('roli.csv', 'r', newline='', encoding='utf-8') as csv_file:
+            reader = csv.reader(csv_file, delimiter=';')
+            for row in reader:
+                role = row[0].strip()  
+                master = row[1].strip()
+                rol = Role(role_name = role, is_master = bool(master))
+                rol.save()
+        with open('employee.csv', 'r', newline='', encoding='utf-8') as file:
+            reader = csv.reader(file, delimiter=';')
+            for row in reader:
+                full_name = f"{row[0]} {row[1]}"
+                birthday = datetime.strptime(row[2], '%d.%m.%Y').date()
+                email = row[3]
+                phone = row[4]
+                role = row[5]
+                card_code = row[6]
+
+                role, created = Role.objects.get_or_create(role_name=role, defaults={'is_master': False})
+                id_card, created = IDCard.objects.get_or_create(code=card_code)
+                employee, created = Employee.objects.get_or_create(
+                    email=email,
+                    defaults={'first_name': row[0], 'last_name': row[1], 'birthday': birthday, 'phone': phone, 'role': role}
+                )
+                employee_id_card, created = EmployeeIDCard.objects.get_or_create(employee=employee, IDCard=id_card)
+        with open('auditory.csv', 'r', newline='', encoding='utf-8') as csv_file:
+            reader = csv.reader(csv_file, delimiter=';')
+            for row in reader:
+                room_number = row[0].strip()  
+                auditorium = Auditorium(room_number=room_number)
+                auditorium.save()
+
+
+    return redirect('all_info')
 
 def page_not_found(request, exception):
     return HttpResponseNotFound("<h1>Страница не найдена</h1>")

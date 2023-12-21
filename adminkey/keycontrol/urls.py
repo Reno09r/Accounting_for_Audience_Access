@@ -11,4 +11,5 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('roles_info/', views.roles_info, name='roles_info'),
     path('audience_info/', views.audience_info, name='audience_info'),
-]
+    path('upload/', views.upload, name='upload')
+]   

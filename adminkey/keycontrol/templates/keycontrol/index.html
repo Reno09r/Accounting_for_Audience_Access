@@ -4,10 +4,11 @@
 <head>
     <link rel="stylesheet" href="{% static 'keycontrol/css/admin.css' %}">    
     <script src="{% static 'keycontrol/js/admin.js' %}"></script>
+    <script src="{% static 'keycontrol/js/search_ico.js' %}"></script>
 </head>
-    <form class="form" id="searchForm" method="get">
-        {{ SearchForm.search_full_name}}
-        {{ SearchForm.search_auditorium}}
+    <form class="form" id="SearchAdminForm" method="get">
+        {{ SearchAdminForm.search_full_name}}
+        {{ SearchAdminForm.search_auditorium}}
         <img id="searchIcon" width="40" height="40" src="https://img.icons8.com/ios/50/search--v1.png" alt="search--v1" class="search_img" name = 'SearchForm'>
         <div class="plus-minus">
         </div>

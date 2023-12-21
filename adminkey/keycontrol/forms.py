@@ -60,7 +60,7 @@ class AddRoleForm(forms.Form):
     )
 
 class DeleteAudienceForm(forms.Form):
-    key = forms.CharField(label='Номер от аудитории', widget=forms.TextInput(attrs={'placeholder': 'Номер'}), required=False)
+    key_name = forms.CharField(label='Номер от аудитории', widget=forms.TextInput(attrs={'placeholder': 'Номер'}), required=False)
     key_selected = forms.ChoiceField(
         label='Выберите аудиторию...',
         choices=[],
@@ -87,7 +87,7 @@ class DeleteRoleForm(forms.Form):
 
 
 class ChangeEmployeeIDCardForm(forms.Form):
-    full_name = forms.CharField(label='ФИО', widget=forms.TextInput(attrs={'placeholder': 'ФИО'}), required=False)
+    full_name = forms.CharField(label='Поиск по ФИО', widget=forms.TextInput(attrs={'placeholder': 'Поиск по ФИО'}), required=False)
     emp_selected = forms.ChoiceField(
         label='Выберите сотрудника...',
         choices=[],
@@ -100,7 +100,7 @@ class ChangeEmployeeIDCardForm(forms.Form):
         self.fields['emp_selected'].choices = emp_choices
 
 class ChangeEmployeeFullNameForm(forms.Form):
-    full_name_search = forms.CharField(label='ФИО', widget=forms.TextInput(attrs={'placeholder': 'ФИО'}), required=False)
+    full_name_search = forms.CharField(label='Поиск по ФИО', widget=forms.TextInput(attrs={'placeholder': 'Поиск по ФИО'}), required=False)
     emp_selected = forms.ChoiceField(
         label='Выберите сотрудника...',
         choices=[],
@@ -124,9 +124,9 @@ class DeleteEmployeeForm(forms.Form):
         super(DeleteEmployeeForm, self).__init__(*args, **kwargs)
         self.fields['emp_selected'].choices = emp_choices
 
-class SearchFullNameForm(forms.Form):
-    full_name = forms.CharField(label='Поиск', widget=forms.TextInput(attrs={'placeholder': 'Поиск', 'class': 'search'}), required=False)
-
 class SearchForm(forms.Form):
+    search = forms.CharField(label='Поиск', widget=forms.TextInput(attrs={'placeholder': 'Поиск', 'class': 'search'}), required=False)
+
+class SearchAdminForm(forms.Form):
     search_full_name = forms.CharField(label='ФИО', widget=forms.TextInput(attrs={'placeholder': 'ФИО', 'class': 'search_one'}), required=False)
     search_auditorium = forms.CharField(label='Кабинет', widget=forms.TextInput(attrs={'placeholder': 'Аудитория', 'class': 'search'}),required=False)
