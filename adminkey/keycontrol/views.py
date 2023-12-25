@@ -7,8 +7,8 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect, JsonResponse
-from .forms import SearchForm, SearchAdminForm, DeleteEmployeeForm, ChangeEmployeeIDCardForm, ChangeEmployeeFullNameForm, AddEmployeeForm, DeleteAudienceForm, DeleteRoleForm, KeyRequestForm, AudienceAddForm,  DeleteAudienceForm, AddRoleForm
-from .models import Auditorium, KeyTransfer, Employee, ByIDTakedKey, IDCard, EmployeeIDCard, Role
+from .forms import DeleteItemForm, SearchForm, AddScheduleForm, SearchAdminForm, ChangeEmployeeIDCardForm, ChangeEmployeeFullNameForm, AddEmployeeForm, KeyRequestForm, AudienceAddForm, AddRoleForm
+from .models import Auditorium, Schedule, Employee, ByIDTakedKey, Role
 from django.shortcuts import render, redirect
 
 @login_required
@@ -30,8 +30,8 @@ def index(request):
         return_time_str = today.strftime("%Y-%m-%d") + ' ' + return_time.strftime('%H:%M')
 
         existing_key_entries = ByIDTakedKey.objects.filter(
-            IDCard__employee__first_name=emp.split()[0],
-            IDCard__employee__last_name=emp.split()[1],
+            employee_id__first_name=emp.split()[0],
+            employee_id__last_name=emp.split()[1],
             is_returned=False
         ).count()
 
@@ -47,8 +47,7 @@ def index(request):
         if not employee.role.is_master and existing_key_entries >= 1:
             raise ValidationError("Роль данного сотрудника не позволяет использовать больше одного ключа.")
         key = Auditorium.objects.get(room_number=key)
-        emp_id_card = EmployeeIDCard.objects.get(employee=employee)
-        ByIDTakedKey.objects.create(IDCard=emp_id_card, auditorium=key, take_time=today,
+        ByIDTakedKey.objects.create(employee_id=employee, auditorium=key, take_time=today,
                                     return_time=return_time_str, key_transferred=False, is_returned=False)
         return redirect('home')
     elif request.method == 'GET' and search_form.is_valid():
@@ -56,13 +55,13 @@ def index(request):
         
         search_auditorium = search_form.cleaned_data['search_auditorium']
         if search_full_name:
-            key_records = key_records.filter(Q(IDCard__employee__first_name__icontains= search_full_name) | Q(IDCard__employee__last_name__icontains= search_full_name))
+            key_records = key_records.filter(Q(employee_id__first_name__icontains= search_full_name) | Q(employee_id__last_name__icontains= search_full_name))
         if search_auditorium:
             key_records = key_records.filter(auditorium__room_number__icontains=search_auditorium)
     
     rows = [{
         'id': record.id,
-        'full_name': f"{record.IDCard.employee.first_name} {record.IDCard.employee.last_name}",
+        'full_name': f"{record.employee_id.first_name} {record.employee_id.last_name}",
         'date': record.take_time.date(),
         'time_received': record.take_time.strftime('%H:%M'),
         'auditorium_key': record.auditorium.room_number,
@@ -87,7 +86,15 @@ def mark_returned(request):
 
     return JsonResponse({'status': 'error'})
 
+def mark_delete(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        selected_ids = data.get('selected_ids', [])
+        for row_id in selected_ids:
+            Schedule.objects.filter(id=int(row_id)).delete()
+        return JsonResponse({'status': 'success'})
 
+    return JsonResponse({'status': 'error'})    
 
 
 @login_required
@@ -121,11 +128,11 @@ def tools(request):
                     f"{emp.first_name} {emp.last_name}") for emp in emps]
     ChangeEmployeeIDCardform =ChangeEmployeeIDCardForm(emp_choices=emp_choices)
     ChangeEmployeeFullNameform = ChangeEmployeeFullNameForm(emp_choices=emp_choices)
-    DeleteEmployeeform = DeleteEmployeeForm(emp_choices=emp_choices)
     AddAudienceform = AudienceAddForm()
     AddRoleform = AddRoleForm()
-    DeleteAudienceform = DeleteAudienceForm(key_choices=key_choices)
-    DeleteRoleform = DeleteRoleForm(role_choices=role_choices)
+    DeleteEmployeeform = DeleteItemForm(lbl_name='Поиск по ФИО', lbl_ch_name='Выберите сотрудника...', item_choices=emp_choices)
+    DeleteAudienceform = DeleteItemForm(lbl_name='Номер от аудитории', lbl_ch_name='Выберите аудиторию...', item_choices=key_choices)
+    DeleteRoleform = DeleteItemForm(lbl_name='Имя роли', lbl_ch_name='Выберите роль...', item_choices=role_choices)
     if request.method == 'POST':
         if 'ChangeEmployeeFullNameForm' in request.POST:
             ChangeEmployeeFullNameform = ChangeEmployeeFullNameForm(request.POST, emp_choices=emp_choices)
@@ -142,20 +149,15 @@ def tools(request):
                 first_name, last_name = ChangeEmployeeIDCardform.cleaned_data['emp_selected'].split()
                 employee = Employee.objects.filter(first_name=first_name, last_name=last_name).first()
                 if employee:
-                    emp_id_card = EmployeeIDCard.objects.get(employee=employee)
-                    emp_id_card.IDCard.code = ChangeEmployeeIDCardform.cleaned_data['id_card']
-                    emp_id_card.IDCard.save()
-                    emp_id_card.save()
+                    employee.id_card_code = ChangeEmployeeIDCardform.cleaned_data['id_card']
+                    employee.save()
         if 'DeleteEmployeeForm' in request.POST:
-            DeleteEmployeeform = DeleteEmployeeForm(request.POST, emp_choices=emp_choices)
+            DeleteEmployeeform = DeleteItemForm(request.POST, lbl_name='Поиск по ФИО', lbl_ch_name='Выберите сотрудника...', item_choices=emp_choices)
             if DeleteEmployeeform.is_valid():
-                first_name, last_name =  DeleteEmployeeform.cleaned_data['emp_selected'].split()
+                first_name, last_name =  DeleteEmployeeform.cleaned_data['item_selected'].split()
                 employee = Employee.objects.filter(first_name=first_name, last_name=last_name).first()
-                emp_id_card = EmployeeIDCard.objects.get(employee=employee)
-                tk = ByIDTakedKey.objects.filter(IDCard = emp_id_card)
+                tk = ByIDTakedKey.objects.filter(employee_id = employee.id)
                 tk.delete()
-                emp_id_card.delete()
-                emp_id_card.IDCard.delete()
                 employee.delete()
         if 'AddAudienceForm' in request.POST:
             AddAudienceform = AudienceAddForm(request.POST)
@@ -172,15 +174,15 @@ def tools(request):
                     is_master = True
                 Role.objects.create(role_name = role, is_master = is_master)
         if 'DeleteAudienceForm' in request.POST:
-            DeleteAudienceform = DeleteAudienceForm(request.POST, key_choices=key_choices)
+            DeleteAudienceform = DeleteItemForm(request.POST, lbl_name='Номер от аудитории', lbl_ch_name='Выберите аудиторию...', item_choices=key_choices)
             if DeleteAudienceform.is_valid():
-                key = DeleteAudienceform.cleaned_data['key_selected']
+                key = DeleteAudienceform.cleaned_data['item_selected']
                 auditorium_to_delete = Auditorium.objects.filter(room_number=key)
                 auditorium_to_delete.delete()
         if 'DeleteRoleForm' in request.POST:
-            DeleteRoleform = DeleteRoleForm(request.POST, role_choices=role_choices)
+            DeleteRoleform = DeleteItemForm(request.POST, lbl_name='Имя роли', lbl_ch_name='Выберите роль...', item_choices=role_choices)
             if DeleteRoleform.is_valid():
-                role = DeleteRoleform.cleaned_data['role_selected']
+                role = DeleteRoleform.cleaned_data['item_selected']
                 role_to_delete = Role.objects.filter(role_name=role)
                 role_to_delete.delete()
         return redirect(request.path)
@@ -216,10 +218,8 @@ def addemp(request):
             role = form.cleaned_data['role']
             fn, ln = fullname.split(maxsplit=1)
             role_obj = Role.objects.get(role_name=role)
-            emp = Employee.objects.create(
-                role=role_obj, birthday=date_of_birth, first_name=fn, last_name=ln, email=email, phone=phone_number)
-            idc = IDCard.objects.create(code=employee_card_id)
-            EmployeeIDCard.objects.create(employee_id=emp.pk, IDCard=idc)
+            Employee.objects.create(
+                role=role_obj, birthday=date_of_birth, id_card_code = employee_card_id, first_name=fn, last_name=ln, email=email, phone=phone_number)
         return redirect(request.path)
     return render(request, 'keycontrol/addemp.html', {'form': form})
 
@@ -241,7 +241,7 @@ def all_info(request):
             'email': record.email,
             'phone': record.phone,
             'role': record.role.role_name,
-            'cardID': EmployeeIDCard.objects.get(employee=record).IDCard.code,
+            'cardID':record.id_card_code,
         })
 
     return render(request, 'keycontrol/all_info.html', {'rows': rows, 'form': form})
@@ -291,20 +291,13 @@ def upload(request):
         with open('employee.csv', 'r', newline='', encoding='utf-8') as file:
             reader = csv.reader(file, delimiter=';')
             for row in reader:
-                full_name = f"{row[0]} {row[1]}"
-                birthday = datetime.strptime(row[2], '%d.%m.%Y').date()
-                email = row[3]
-                phone = row[4]
                 role = row[5]
-                card_code = row[6]
-
                 role, created = Role.objects.get_or_create(role_name=role, defaults={'is_master': False})
-                id_card, created = IDCard.objects.get_or_create(code=card_code)
                 employee, created = Employee.objects.get_or_create(
-                    email=email,
-                    defaults={'first_name': row[0], 'last_name': row[1], 'birthday': birthday, 'phone': phone, 'role': role}
+                    email=row[3],
+                    defaults={'first_name': row[0], 'last_name': row[1], 'birthday': datetime.strptime(row[2], '%d.%m.%Y').date(), 
+                              'phone': row[4], 'role': role, 'id_card_code': row[6]}
                 )
-                employee_id_card, created = EmployeeIDCard.objects.get_or_create(employee=employee, IDCard=id_card)
         with open('auditory.csv', 'r', newline='', encoding='utf-8') as csv_file:
             reader = csv.reader(csv_file, delimiter=';')
             for row in reader:
@@ -315,5 +308,51 @@ def upload(request):
 
     return redirect('all_info')
 
-def page_not_found(request, exception):
-    return HttpResponseNotFound("<h1>Страница не найдена</h1>")
+@login_required
+def schedule(request):
+    search_form = SearchAdminForm(request.GET)
+    emps = Employee.objects.all()
+    emp_choices = [(f"{emp.first_name} {emp.last_name}",
+                    f"{emp.first_name} {emp.last_name}") for emp in emps]
+    keys = Auditorium.objects.all()
+    key_choices = [(key.room_number, key.room_number) for key in keys]
+    
+    form = AddScheduleForm(request.POST, emp_choices=emp_choices, key_choices=key_choices)
+    search_form = SearchAdminForm(request.GET)
+    schedule_records = Schedule.objects.all()
+    if request.method == 'POST' and form.is_valid():
+        emp = form.cleaned_data['emp_choose']
+        key = form.cleaned_data['key_choose']
+        start_time = form.cleaned_data['start_time']
+        end_time = form.cleaned_data['end_time']
+        day_of_week = form.cleaned_data['day_choose']
+        employee = Employee.objects.get(first_name=emp.split()[0], last_name=emp.split()[1])
+        key = Auditorium.objects.get(room_number=key)
+        Schedule.objects.create(employee = employee, auditorium = key, day_of_week = day_of_week, start_time = start_time, end_time = end_time)
+        return redirect('schedule')
+    elif request.method == 'GET' and search_form.is_valid():
+        search_full_name =search_form.cleaned_data['search_full_name']
+        search_auditorium = search_form.cleaned_data['search_auditorium']
+        day_of_week = search_form.cleaned_data['day_of_week']
+        if search_full_name:
+            schedule_records = schedule_records.filter(Q(employee_id__first_name__icontains= search_full_name) | Q(employee_id__last_name__icontains= search_full_name))
+        if search_auditorium:
+            schedule_records = schedule_records.filter(auditorium__room_number__icontains=search_auditorium)
+        if day_of_week and day_of_week != 'Все':
+            schedule_records = schedule_records.filter(day_of_week=day_of_week)   
+    rows = [{
+        'id': record.id,
+        'full_name': f"{record.employee.first_name} {record.employee.last_name}",
+        'key': record.auditorium.room_number,
+        'start_time': record.start_time.strftime('%H:%M'),
+        'end_time': record.end_time.strftime('%H:%M'),
+        "day_of_week": record.day_of_week
+    } for record in schedule_records]
+    context = {
+        'SearchAdminForm': search_form,
+        'AddScheduleForm': form,
+        'rows': rows
+    }
+    if 'day_of_week' in request.GET:
+        return JsonResponse({'rows': rows})
+    return render(request, 'keycontrol/schedule.html', context)

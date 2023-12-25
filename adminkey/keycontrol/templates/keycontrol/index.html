@@ -2,8 +2,9 @@
 {% load static %}
 {% block content %}
 <head>
-    <link rel="stylesheet" href="{% static 'keycontrol/css/admin.css' %}">    
-    <script src="{% static 'keycontrol/js/admin.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'keycontrol/css/admin.css' %}">   
+    <script src="{% static 'keycontrol/js/modal_win.js' %}"></script> 
+    <script src="{% static 'keycontrol/js/mark.js' %}"></script>
     <script src="{% static 'keycontrol/js/search_ico.js' %}"></script>
 </head>
     <form class="form" id="SearchAdminForm" method="get">
@@ -48,7 +49,9 @@
             
             <button type="submit" name = 'KeyRequestForm'>Добавить</button>
         </form>
+        <script src="{% static 'keycontrol/js/search.js' %}"></script>
     </div>
+    
 
     <table>
         <tr>

@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{% static 'keycontrol/css/schedule.css' %}">
+    <script src="{% static 'keycontrol/js/modal_win.js' %}"></script> 
+    <script src="{% static 'keycontrol/js/mark.js' %}"></script>
+    <script src="{% static 'keycontrol/js/search_ico.js' %}"></script>
+</head>
+<body>
+    <form class="form" id="SearchAdminForm" method="get">
+        {{ SearchAdminForm.search_full_name}}
+        {{ SearchAdminForm.search_auditorium}}
+        <img id="searchIcon" width="40" height="40" src="https://img.icons8.com/ios/50/search--v1.png" alt="search--v1" class="search_img" name = 'SearchForm'>
+        <div class="plus-minus"></div>
+        <form method="post">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAABHklEQVR4nO2WTUrDUBSFv010UJuI69C6AKEGt6HGuhZnlpYOOuzcn50k4ipMnJlQCdxCCC/JfYlPMsiBOwmBj3veefc+GDVAnQIPwDsQA99SsXwLAf8vgTNgBWTAoaVyYA+c9YXeAKkCWK0ECLpCH6UDW2i5+2WXTvMe0DJc3bmntPccmCttP9GAt8pujtL8u9ZcmcwBOBMna7W0OD8b8AG4bwK/OQS/NIE/HYLjJnBSk15bmdKe2IIvOoAvbcEfDq2OBhmu0CH4tgnsOxogP20DpNDGAfgZ5eI3pduUdlN6q/UFTFHqysLytrV4rYWW53bfh0DxRuukQGm7yd4FPTUBniSZmi53NmeqkSer7VWmUCoVyXC401yZUfy3fgGUCo4V1aA/HAAAAABJRU5ErkJggg=="
+                onclick="showModalWin()">
+            <img id = "minusButton" width="30" height="30" src="https://img.icons8.com/fluency-systems-filled/30/minus.png" alt="minus" onclick="DeleteSchedule('{{csrf_token}}')">
+        </form>
+    </form>
+    <div id="popupWin" class="modalwin">
+        <p>Добавление расписания</p>
+        <form class="new_form" method="post">
+            {% csrf_token %}
+    
+            <div class="form-field">
+                {{ AddScheduleForm.full_name }}
+            </div>
+            
+            <div class="form-field">
+                {{ AddScheduleForm.emp_choose }}
+            </div>
+            
+            <div class="form-field">
+                {{ AddScheduleForm.key }}
+            </div>
+            
+            <div class="form-field">
+                {{ AddScheduleForm.key_choose }}
+            </div>
+            <div class="form-field">
+                {{ AddScheduleForm.start_time }}
+            </div>
+            <div class="form-field">
+                {{ AddScheduleForm.end_time }}
+            </div>
+            <div class="form-field">
+                {{ AddScheduleForm.day_choose }}
+            </div>
+            <button type="submit" name = 'AddScheduleForm'>Добавить</button>
+        </form>
+        <script src="{% static 'keycontrol/js/search.js' %}"></script>
+    </div>
+    <div class="content">
+        <div class="content">
+            <div class="cont">
+                <button class="day-button" onclick="filterByDay('Все')">Все</button>
+                <button class="day-button" onclick="filterByDay('Понедельник')">Понедельник</button>
+                <button class="day-button" onclick="filterByDay('Вторник')">Вторник</button>
+                <button class="day-button" onclick="filterByDay('Среда')">Среда</button>
+                <button class="day-button" onclick="filterByDay('Четверг')">Четверг</button>
+                <button class="day-button" onclick="filterByDay('Пятница')">Пятница</button>
+            </div>
+        </div>
+        
+        <script>
+            document.querySelectorAll('.day-button').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var dayOfWeek = this.innerText.trim();
+                    filterByDay(dayOfWeek);
+                });
+            });
+        
+            function filterByDay(day) {
+                fetch(`/schedule/?day_of_week=${encodeURIComponent(day)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        updateTable(data.rows);
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        
+            function updateTable(rows) {
+                var table = document.getElementById('info');
+            
+                while (table.rows.length > 1) {
+                    table.deleteRow(1);
+                }
+            
+                rows.forEach(function (row) {
+                    var newRow = table.insertRow(-1);
+            
+                    var cell1 = newRow.insertCell(0);
+                    var cell2 = newRow.insertCell(1);
+                    var cell3 = newRow.insertCell(2);
+                    var cell4 = newRow.insertCell(3);
+                    var cell5 = newRow.insertCell(4);
+                    var cell6 = newRow.insertCell(5);
+            
+                    cell1.innerHTML = `<input type="checkbox" data-row-id="${row.id}">`;
+                    cell2.innerHTML = row.full_name;
+                    cell3.innerHTML = row.key;
+                    cell4.innerHTML = row.start_time;
+                    cell5.innerHTML = row.end_time;
+                    cell6.innerHTML = row.day_of_week;
+                });
+            }
+        </script>
+    </div>
+        <table id = 'info'>
+            <tr>
+                <th></th>
+                <td>Преподаватель</td>
+                <td>Аудитория</td>
+                <td>Время начала</td>
+                <td>Время окончания</td>
+                <td>День недели</td>
+            </tr>
+            {% for row in rows %}
+            <tr>
+                <td><input type="checkbox" data-row-id="{{ row.id }}"></td>
+                <td>{{ row.full_name }}</td>
+                <td>{{ row.key }}</td>
+                <td>{{ row.start_time }}</td>
+                <td>{{ row.end_time }}</td>
+                <td>{{ row.day_of_week }}</td>
+            </tr>
+            {% endfor%}
+    </table>
+    
+</body>
+</html>
+{% endblock %}
