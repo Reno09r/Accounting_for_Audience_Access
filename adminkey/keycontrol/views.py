@@ -286,14 +286,13 @@ def upload(request):
             for row in reader:
                 role = row[0].strip()  
                 master = row[1].strip()
-                rol = Role(role_name = role, is_master = bool(master))
-                rol.save()
+                Role.objects.get_or_create(role_name = role, is_master = bool(master))
         with open('employee.csv', 'r', newline='', encoding='utf-8') as file:
             reader = csv.reader(file, delimiter=';')
             for row in reader:
                 role = row[5]
-                role, created = Role.objects.get_or_create(role_name=role, defaults={'is_master': False})
-                employee, created = Employee.objects.get_or_create(
+                role, _ = Role.objects.get_or_create(role_name=role, defaults={'is_master': False})
+                _, _ = Employee.objects.get_or_create(
                     email=row[3],
                     defaults={'first_name': row[0], 'last_name': row[1], 'birthday': datetime.strptime(row[2], '%d.%m.%Y').date(), 
                               'phone': row[4], 'role': role, 'id_card_code': row[6]}
@@ -302,8 +301,7 @@ def upload(request):
             reader = csv.reader(csv_file, delimiter=';')
             for row in reader:
                 room_number = row[0].strip()  
-                auditorium = Auditorium(room_number=room_number)
-                auditorium.save()
+                Auditorium.objects.get_or_create(room_number=room_number)
 
 
     return redirect('all_info')
