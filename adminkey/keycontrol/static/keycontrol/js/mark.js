@@ -1,19 +1,3 @@
-function showModalWin() {
-
-    var darkLayer = document.createElement('div');
-    darkLayer.id = 'shadow'; 
-    document.body.appendChild(darkLayer); 
-
-    var modalWin = document.getElementById('popupWin');
-    modalWin.style.display = 'block';
-
-    darkLayer.onclick = function () {  
-        darkLayer.parentNode.removeChild(darkLayer); 
-        modalWin.style.display = 'none'; 
-        return false;
-    };
-}
-
 function ReturnKeys(csrfToken) {
     var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
     var selectedIds = Array.from(checkboxes).map(function(checkbox) {
@@ -36,8 +20,32 @@ function ReturnKeys(csrfToken) {
         return response.json();
     })
     .then(function(data) {
-        console.log(data);  
-        console.log(selectedIds)
+        location.reload(true)
+    });
+}
+
+function DeleteSchedule(csrfToken) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+    var selectedIds = Array.from(checkboxes).map(function(checkbox) {
+        return checkbox.dataset.rowId;
+    });
+
+    fetch('/mark_delete/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCookie('csrftoken')  
+        },
+        body: JSON.stringify({
+            'action': 'mark_delete',
+            'selected_ids': selectedIds
+        })
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
         location.reload(true)
     });
 }

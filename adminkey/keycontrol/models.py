@@ -23,25 +23,15 @@ class Employee(models.Model):
     birthday = models.DateField()
     email = models.TextField()
     phone = models.TextField()
+    tg_username = models.TextField(null=True)
+    id_card_code = models.TextField()
 
     def __str__(self):
         return self.first_name, self.last_name
 
-class IDCard(models.Model):
-    id = models.AutoField(primary_key=True)
-    code = models.TextField()
-
-    def __str__(self):
-        return self.code
-
-class EmployeeIDCard(models.Model):
-    id = models.AutoField(primary_key=True)
-    employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
-    IDCard = models.ForeignKey(IDCard, on_delete=models.RESTRICT)
-
 class ByIDTakedKey(models.Model):
     id = models.AutoField(primary_key=True)
-    IDCard = models.ForeignKey(EmployeeIDCard, on_delete=models.RESTRICT)
+    employee_id = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     auditorium = models.ForeignKey(Auditorium, on_delete=models.RESTRICT)
     take_time = models.DateTimeField()
     return_time = models.DateTimeField()
@@ -53,8 +43,8 @@ class Schedule(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     auditorium = models.ForeignKey(Auditorium, on_delete=models.RESTRICT)
     day_of_week = models.TextField()
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
 
 class KeyTransfer(models.Model):
     id = models.AutoField(primary_key=True)

@@ -12,14 +12,14 @@ class AddEmployeeForm(forms.Form):
     employee_card_id = forms.CharField(
         label='ID карточка сотрудника', required=True)
     role = forms.ChoiceField(label='Роль', choices=[], required=True)
-
+    tg_username = forms.CharField(
+        label='Имя пользователя в телеграм (username)', required=False)
     def __init__(self, *args, **kwargs):
         role_choices = kwargs.pop('role_choices', [])
         super(AddEmployeeForm, self).__init__(*args, **kwargs)
         self.fields['role'].choices = role_choices
 
-
-class KeyRequestForm(forms.Form):
+class EmployeeAndKeyForm(forms.Form):
     full_name = forms.CharField(
         widget=forms.TextInput(attrs={'placeholder': 'ФИО'}), required=False
     )
@@ -34,18 +34,33 @@ class KeyRequestForm(forms.Form):
         choices=[],
         widget=forms.Select(attrs={'required': True})
     )
+
+    def __init__(self, *args, **kwargs):
+        emp_choices = kwargs.pop('emp_choices', [])
+        key_choices = kwargs.pop('key_choices', [])
+        super(EmployeeAndKeyForm, self).__init__(*args, **kwargs)
+        self.fields['emp_choose'].choices = emp_choices
+        self.fields['key_choose'].choices = key_choices
+
+class KeyRequestForm(EmployeeAndKeyForm):
     return_time = forms.TimeField(
         widget=forms.TimeInput(
             attrs={'placeholder': 'Время возврата', 'required': True})
     )
 
-    def __init__(self, *args, **kwargs):
-        emp_choices = kwargs.pop('emp_choices', [])
-        key_choices = kwargs.pop('key_choices', [])
-        super(KeyRequestForm, self).__init__(*args, **kwargs)
-        self.fields['emp_choose'].choices = emp_choices
-        self.fields['key_choose'].choices = key_choices
-
+class AddScheduleForm(EmployeeAndKeyForm):
+    start_time = forms.TimeField(
+        widget=forms.TimeInput(
+            attrs={'placeholder': 'Время начала', 'required': True})
+    )
+    end_time = forms.TimeField(
+        widget=forms.TimeInput(
+            attrs={'placeholder': 'Время окончания', 'required': True})
+    )
+    day_choose = forms.ChoiceField(
+        choices=[('Понедельник', 'Понедельник'), ('Вторник', 'Вторник'), ('Среда', 'Среда'), ('Четверг', 'Четверг'), ('Пятница', 'Пятница'),],
+        widget=forms.Select(attrs={'required': True})
+    )
 
 class AudienceAddForm(forms.Form):
     key = forms.CharField(label='Номер от аудитории', widget=forms.TextInput(attrs={'placeholder': 'Номер'}), required=True)
@@ -59,32 +74,20 @@ class AddRoleForm(forms.Form):
         required=True
     )
 
-class DeleteAudienceForm(forms.Form):
-    key_name = forms.CharField(label='Номер от аудитории', widget=forms.TextInput(attrs={'placeholder': 'Номер'}), required=False)
-    key_selected = forms.ChoiceField(
-        label='Выберите аудиторию...',
+class DeleteItemForm(forms.Form):
+    item_name = forms.CharField(label='Имя элемента', widget=forms.TextInput(attrs={'placeholder': 'Номер'}), required=False)
+    item_selected = forms.ChoiceField(
+        label='Выберите элемент...',
         choices=[],
         widget=forms.Select(attrs={'required': True})
     )
 
-    def __init__(self, *args, **kwargs):
-        key_choices = kwargs.pop('key_choices', [])
-        super(DeleteAudienceForm, self).__init__(*args, **kwargs)
-        self.fields['key_selected'].choices = key_choices 
-
-
-class DeleteRoleForm(forms.Form):
-    role = forms.CharField(label='Имя роли', widget=forms.TextInput(attrs={'placeholder': 'Имя'}), required=False)
-    role_selected = forms.ChoiceField(
-        label='Выберите роль...',
-        choices=[],
-        widget=forms.Select(attrs={'required': True})
-    )
-    def __init__(self, *args, **kwargs):
-        role_choices = kwargs.pop('role_choices', [])
-        super(DeleteRoleForm, self).__init__(*args, **kwargs)
-        self.fields['role_selected'].choices = role_choices 
-
+    def __init__(self, *args, lbl_name, lbl_ch_name,  **kwargs):
+        item_selected = kwargs.pop('item_choices', [])
+        super(DeleteItemForm, self).__init__(*args, **kwargs)
+        self.fields['item_selected'].choices = item_selected
+        self.fields['item_name'].label = lbl_name
+        self.fields['item_selected'].label = lbl_ch_name
 
 class ChangeEmployeeIDCardForm(forms.Form):
     full_name = forms.CharField(label='Поиск по ФИО', widget=forms.TextInput(attrs={'placeholder': 'Поиск по ФИО'}), required=False)
@@ -105,23 +108,11 @@ class ChangeEmployeeFullNameForm(forms.Form):
         label='Выберите сотрудника...',
         choices=[],
         widget=forms.Select(attrs={'required': True})
-    )
+    )   
     full_name = forms.CharField(label='Изменить ФИО на:', widget=forms.TextInput(attrs={'placeholder': 'Изменить ФИО на:'}), required=True)
     def __init__(self, *args, **kwargs):
         emp_choices = kwargs.pop('emp_choices', [])
         super(ChangeEmployeeFullNameForm, self).__init__(*args, **kwargs)
-        self.fields['emp_selected'].choices = emp_choices
-
-class DeleteEmployeeForm(forms.Form):
-    full_name = forms.CharField(label='Поиск по ФИО', widget=forms.TextInput(attrs={'placeholder': 'Поиск по ФИО'}), required=False)
-    emp_selected = forms.ChoiceField(
-        label='Выберите сотрудника...',
-        choices=[],
-        widget=forms.Select(attrs={'required': True})
-    )
-    def __init__(self, *args, **kwargs):
-        emp_choices = kwargs.pop('emp_choices', [])
-        super(DeleteEmployeeForm, self).__init__(*args, **kwargs)
         self.fields['emp_selected'].choices = emp_choices
 
 class SearchForm(forms.Form):
@@ -130,3 +121,4 @@ class SearchForm(forms.Form):
 class SearchAdminForm(forms.Form):
     search_full_name = forms.CharField(label='ФИО', widget=forms.TextInput(attrs={'placeholder': 'ФИО', 'class': 'search_one'}), required=False)
     search_auditorium = forms.CharField(label='Кабинет', widget=forms.TextInput(attrs={'placeholder': 'Аудитория', 'class': 'search'}),required=False)
+    day_of_week = forms.CharField(label='День недели', widget=forms.TextInput(attrs={'placeholder': 'День недели', 'class': 'search'}),required=False)
