@@ -27,9 +27,9 @@ class Employee(models.Model):
     id_card_code = models.TextField()
 
     def __str__(self):
-        return self.first_name, self.last_name
+        return f"{self.first_name} {self.last_name}"
 
-class ByIDTakedKey(models.Model):
+class ByEmployeeTakedKey(models.Model):
     id = models.AutoField(primary_key=True)
     employee_id = models.ForeignKey(Employee, on_delete=models.RESTRICT)
     auditorium = models.ForeignKey(Auditorium, on_delete=models.RESTRICT)

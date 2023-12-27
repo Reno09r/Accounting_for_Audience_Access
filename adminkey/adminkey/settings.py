@@ -80,15 +80,21 @@ WSGI_APPLICATION = 'adminkey.wsgi.application'
 from dotenv import load_dotenv
 import os
 load_dotenv()
+POSTGRES_DB = os.environ.get('POSTGRES_DB')
+POSTGRES_USER = os.environ.get('POSTGRES_USER')
+POSTGRES_PASS = os.environ.get('POSTGRES_PASSWORD')
+POSTGRES_HOST = "localhost"
+POSTGRES_PORT = 5432
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'key_access_db',
-        'USER': 'postgres',
-        'PASSWORD': os.getenv("DB_PASSWORD"),
-        'HOST': 'localhost',
-        'PORT': '',
-    }
+        'NAME': POSTGRES_DB,
+        'USER': POSTGRES_USER,
+        'PASSWORD': POSTGRES_PASS,
+        'HOST': POSTGRES_HOST,
+        'PORT': POSTGRES_PORT,
+    },
 }
 
 
@@ -116,7 +122,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+USE_L10N = False
+
+TIME_ZONE = 'Asia/Almaty'
 
 USE_I18N = True
 

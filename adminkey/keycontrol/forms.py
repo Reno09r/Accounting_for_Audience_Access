@@ -21,14 +21,14 @@ class AddEmployeeForm(forms.Form):
 
 class EmployeeAndKeyForm(forms.Form):
     full_name = forms.CharField(
-        widget=forms.TextInput(attrs={'placeholder': 'ФИО'}), required=False
+        widget=forms.TextInput(attrs={'placeholder': 'Поиск по ФИО'}), required=False
     )
     emp_choose = forms.ChoiceField(
         choices=[],
         widget=forms.Select(attrs={'required': True})
     )
     key = forms.CharField(
-        widget=forms.TextInput(attrs={'placeholder': 'Ключ'}), required=False
+        widget=forms.TextInput(attrs={'placeholder': 'Поиск по ключу'}), required=False
     )
     key_choose = forms.ChoiceField(
         choices=[],
@@ -82,12 +82,12 @@ class DeleteItemForm(forms.Form):
         widget=forms.Select(attrs={'required': True})
     )
 
-    def __init__(self, *args, lbl_name, lbl_ch_name,  **kwargs):
-        item_selected = kwargs.pop('item_choices', [])
+    def __init__(self, *args, lbl_name, lbl_ch_name, item_choices, **kwargs):
         super(DeleteItemForm, self).__init__(*args, **kwargs)
-        self.fields['item_selected'].choices = item_selected
+        self.fields['item_selected'].choices = item_choices
         self.fields['item_name'].label = lbl_name
         self.fields['item_selected'].label = lbl_ch_name
+        self.fields['item_name'].widget.attrs['placeholder'] = lbl_name
 
 class ChangeEmployeeIDCardForm(forms.Form):
     full_name = forms.CharField(label='Поиск по ФИО', widget=forms.TextInput(attrs={'placeholder': 'Поиск по ФИО'}), required=False)
