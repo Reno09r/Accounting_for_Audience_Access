@@ -1,0 +1,38 @@
+body{
+    margin: 0;
+}
+.head{
+    width: 100%;
+    height: 70px;
+    background-image: url('../img/vhod.jpg');
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+.title{
+    display: flex;
+    justify-content: flex-start;
+    padding-right: 30%;
+    margin-left: 4%;
+}
+.itm{
+    display: inline;
+    padding-left: 22%;
+}
+.itm img{
+    padding-left: 7px;
+    margin-top: 9px;
+}
+b{
+    font-size: 35px;
+    padding-left: 40px;
+}
+img{
+    width: 35px;
+    height: 35px;
+    margin-left: 3px;
+}
+a{
+    text-decoration: none;
+    color: #000;
+}

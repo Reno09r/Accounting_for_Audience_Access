@@ -1,0 +1,229 @@
+
+.hide{
+    display: none;
+}
+
+.block_one {
+    width: 950px;
+    height: 500px;
+    background-color: white;
+    border-radius: 90px;
+    border: 2px solid black;
+    margin: 0 auto;
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-around;
+
+}
+
+.first_row{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.second_row{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-top: 4.5px;
+}
+.btn{
+    width: 140px;
+    height: 40px;
+    margin-left: 30px;
+    font-size: 20px;
+}
+/* .block_one {
+    width: 1050px;
+    height: 500px;
+    background-color: white;
+    border-radius: 18%;
+    border: 2px solid black;
+    margin-left: 11%;
+    margin-top: 40px;
+
+}
+.card1{
+    display: inline-block;
+    margin-left: 18%;
+    margin-top: 40px;
+}
+.card2{
+    display: inline-block;
+    margin-top: 40px;
+    margin-left: 18%;
+}
+.card{
+    display: inline-block;
+    margin-left: 18%;
+    margin-top: 40px;
+}
+.btn{
+    width: 110px;
+    height: 30px;
+    margin-left: 30px;
+} */
+.block_ID { 
+    height: 50%;  
+    width: 40%;
+    background: rgb(255, 255, 255);
+    top: 20%; 
+    right: 0;
+    left: 0;
+    font-size: 14px; 
+    margin: 0 auto;
+    z-index:2; 
+    display: none;  
+    position: fixed; 
+    padding: 15px;
+    border: 3px solid #383838;
+    border-radius: 30px;
+}
+.block_name { 
+    height: 50%;  
+    width: 40%;
+    background: rgb(255, 255, 255);
+    top: 20%; 
+    right: 0;
+    left: 0;
+    font-size: 14px; 
+    margin: 0 auto;
+    z-index:2; 
+    display: none;  
+    position: fixed; 
+    padding: 15px;
+    border: 3px solid #383838;
+    border-radius: 30px;
+}
+.block_emp{ 
+    height: 40%;  
+    width: 40%;
+    background: rgb(255, 255, 255);
+    top: 20%; 
+    right: 0;
+    left: 0;
+    font-size: 14px; 
+    margin: 0 auto;
+    z-index:2; 
+    display: none;  
+    position: fixed; 
+    padding: 15px;
+    border: 3px solid #383838;
+    border-radius: 30px;
+}
+.block_key{ 
+    height: 45%;  
+    width: 40%;
+    background: rgb(255, 255, 255);
+    top: 20%; 
+    right: 0;
+    left: 0;
+    font-size: 14px; 
+    margin: 0 auto;
+    z-index:2; 
+    display: none;  
+    position: fixed; 
+    padding: 15px;
+    border: 3px solid #383838;
+    border-radius: 30px;
+}
+.block_roli{ 
+    height: 45%;  
+    width: 40%;
+    background: rgb(255, 255, 255);
+    top: 20%; 
+    right: 0;
+    left: 0;
+    font-size: 14px; 
+    margin: 0 auto;
+    z-index:2; 
+    display: none;  
+    position: fixed; 
+    padding: 15px;
+    border: 3px solid #383838;
+    border-radius: 30px;
+}
+
+.tab {
+    margin: 0;
+    overflow: hidden;
+    float: right;
+}
+
+.tab .tablinks {
+    background-color: #f3ebeb;
+    width: 100px;
+    height: 30px;
+    cursor: pointer;
+    outline: none;
+    border-radius: 10px;
+    
+    transition: 0.3s;
+    font-size: 15px;
+}
+
+.tab .tablinks:hover {
+    background-color: #ddd;
+}
+
+.tab .tablinks.active {
+    background-color: #ccc;
+}
+
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border-top: none;
+}
+
+#shadow { 
+    position: fixed;
+    width:100%;
+    height:100%;
+    z-index:1;
+    background:#000;
+    opacity: 0.5;
+    left:0;
+    top:0;
+}
+.new_form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 400px;
+    margin: 50px auto;
+}
+.form-field {
+    margin-bottom: 20px;
+    width: 80%;
+}
+.form-field input, .form-field select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #888888;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+.for-field {
+    margin-bottom: 20px;
+    width: 80%;
+}
+.for-field .radio_key{
+    padding-left: 10px;
+}
+.lable{
+    margin-top: 10px;
+    font-size: 19px;
+}
+.btn_ID{
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #d9f2f2;
+    border: 1px solid black;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.btn_ID[type="submit"]:hover {
+    background-color: #377ac2;
+}

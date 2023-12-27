@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'keycontrol/css/error.css' %}"> 
+</head>
+<body>
+    <div class="block_one">
+        <div class="font">
+            <b class="er404">Ошибка</b> 
+        </div>
+        <div class="fon">
+            <p class="error">{{error_msg}}</p>
+        </div> 
+        <div class="btn" onclick="goBack()">
+            <button>Вернуться назад</button>
+            <script>
+                function goBack() {
+                    window.history.back();
+                }
+            </script>
+        </div>
+    </div>
+</body>
+</html>
